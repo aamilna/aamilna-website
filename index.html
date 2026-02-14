@@ -39,7 +39,7 @@ header img{height:95px;}
 /* PROFILE AVATAR */
 .profile-container{
   cursor:pointer;
-  position:relative; /* keep relative to header flex container */
+  position:relative;
 }
 .profile-avatar{width:50px;height:50px;border-radius:50%;object-fit:cover;border:2px solid #d8a7a0;}
 .profile-dropdown{
@@ -71,7 +71,7 @@ section{padding:80px 50px;}
 
 /* COLLECTION */
 .collection{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:35px;}
-.card{background:rgba(255,255,255,0.95);border-radius:28px;padding:25px;box-shadow:0 20px 40px rgba(0,0,0,0.12);text-align:center;transition:0.4s;}
+.card{background:rgba(255,255,255,0.95);border-radius:28px;padding:25px;box-shadow:0 20px 40px rgba(0,0,0,0.12);text-align:center;transition:0.4s;cursor:pointer;}
 .card:hover{transform:translateY(-10px) scale(1.03);}
 .card img{width:100%;height:230px;object-fit:cover;border-radius:20px;margin-bottom:18px;}
 .card h3{margin-bottom:15px;}
@@ -85,14 +85,12 @@ footer{background:#eadfd4;text-align:center;padding:25px;font-size:14px;}
 
 <body>
 
-<!-- BACKGROUND -->
 <div class="bubble-bg">
   <div class="bubble"></div>
   <div class="bubble"></div>
   <div class="bubble"></div>
 </div>
 
-<!-- HEADER -->
 <header>
   <img src="logo.png" alt="AaMilNa Logo">
   <div style="display:flex; align-items:center; gap:25px;">
@@ -101,7 +99,6 @@ footer{background:#eadfd4;text-align:center;padding:25px;font-size:14px;}
   </div>
 </header>
 
-<!-- HERO -->
 <div class="hero">
   <h1>AaMilNa</h1>
   <p>
@@ -110,34 +107,13 @@ footer{background:#eadfd4;text-align:center;padding:25px;font-size:14px;}
   </p>
 </div>
 
-<!-- COLLECTION -->
 <section>
   <h2 class="section-title">Discover Collections</h2>
-  <div class="collection">
-    <div class="card">
-      <img src="tote.jpg" alt="Tote Bags">
-      <h3>Embroidered Tote Bags</h3>
-      <a href="shop.html">Discover</a>
-    </div>
-    <div class="card">
-      <img src="crochet.jpg" alt="Crochet Collection">
-      <h3>Crochet Collection</h3>
-      <a href="shop.html">Discover</a>
-    </div>
-    <div class="card">
-      <img src="jewelry.jpg" alt="Handmade Jewelry">
-      <h3>Handmade Jewelry</h3>
-      <a href="shop.html">Discover</a>
-    </div>
-    <div class="card">
-      <img src="stationery.jpg" alt="Artisan Stationery">
-      <h3>Artisan Stationery</h3>
-      <a href="shop.html">Discover</a>
-    </div>
+  <div class="collection" id="collectionContainer">
+    <!-- Cards dynamically added -->
   </div>
 </section>
 
-<!-- FOOTER -->
 <footer>
   Official email:
   <strong>aamila.com@gmail.com</strong><br>
@@ -145,15 +121,12 @@ footer{background:#eadfd4;text-align:center;padding:25px;font-size:14px;}
 </footer>
 
 <script>
-// GET ELEMENTS
+// --- NAVIGATION & PROFILE ---
 const nav = document.getElementById("navLinks");
 const profileContainer = document.getElementById("profileContainer");
-
-// USERS
 const artisan = JSON.parse(localStorage.getItem("artisanProfile"));
 const customer = JSON.parse(localStorage.getItem("currentCustomer"));
 
-// NAV LINKS
 function setNavLinks(){
   if(artisan && artisan.id){
     nav.innerHTML = `<a href="artisan-dashboard.html">Dashboard</a>`;
@@ -165,14 +138,12 @@ function setNavLinks(){
   }
 }
 
-// LOGOUT FUNCTION
 function logout(type){
   if(type==='artisan') localStorage.removeItem('artisanProfile');
   if(type==='customer') localStorage.removeItem('currentCustomer');
   location.reload();
 }
 
-// PROFILE DROPDOWN
 function setProfile(user, type){
   if(!user) return;
   profileContainer.innerHTML = `
@@ -190,16 +161,9 @@ function setProfile(user, type){
   const avatarImg = document.getElementById('profileAvatar');
   const dropdown = document.getElementById('profileDropdown');
 
-  // Toggle dropdown on avatar click
-  avatarImg.addEventListener('click', (e)=>{
-    e.stopPropagation();
-    dropdown.style.display = dropdown.style.display==='flex' ? 'none' : 'flex';
-  });
-
-  // LOGOUT BUTTON inside dropdown
+  avatarImg.addEventListener('click', (e)=>{e.stopPropagation(); dropdown.style.display = dropdown.style.display==='flex' ? 'none':'flex';});
   document.getElementById('logoutBtn').addEventListener('click', ()=> logout(type));
 
-  // AVATAR UPLOAD (CUSTOMER ONLY)
   if(type==='customer'){
     const avatarUpload = document.getElementById('avatarUpload');
     avatarUpload.addEventListener('change', (e)=>{
@@ -216,15 +180,37 @@ function setProfile(user, type){
     });
   }
 
-  // Close dropdown if click outside
-  document.addEventListener('click', (e)=>{
-    if(!profileContainer.contains(e.target)){
-      dropdown.style.display = 'none';
-    }
-  });
+  document.addEventListener('click', (e)=>{if(!profileContainer.contains(e.target)) dropdown.style.display='none';});
 }
 
-// INITIALIZE
+// --- COLLECTION CARDS ---
+const collections = [
+  {name:'Embroidered Tote Bags', img:'tote.jpg'},
+  {name:'Crochet Collection', img:'crochet.jpg'},
+  {name:'Handmade Jewelry', img:'jewelry.jpg'},
+  {name:'Artisan Stationery', img:'stationery.jpg'},
+  {name:'Textile Arts', img:'textile.jpg'},
+  {name:'Art & Illustration', img:'art.jpg'},
+  {name:'Home & Decor', img:'decor.jpg'},
+  {name:'Edible Art', img:'edible.jpg'},
+  {name:'Self-Care & Wellness', img:'selfcare.jpg'},
+  {name:'Custom & Personalized', img:'custom.jpg'}
+];
+
+const collectionContainer = document.getElementById('collectionContainer');
+
+collections.forEach(col=>{
+  const card = document.createElement('div');
+  card.className='card';
+  card.innerHTML = `
+    <img src="${col.img}" alt="${col.name}">
+    <h3>${col.name}</h3>
+    <a href="shop.html">Discover</a>
+  `;
+  collectionContainer.appendChild(card);
+});
+
+// --- INIT ---
 setNavLinks();
 if(artisan && artisan.id) setProfile(artisan,'artisan');
 if(customer && customer.id) setProfile(customer,'customer');
@@ -232,6 +218,13 @@ if(customer && customer.id) setProfile(customer,'customer');
 
 </body>
 </html>
+
+
+
+
+
+
+
 
 
 

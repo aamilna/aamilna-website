@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Order Detail • AaMilNa</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;1,600&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+body{font-family:'Poppins',sans-serif;background:#fff7f0;color:#4a3b47;margin:0;padding:0;}
+.container{max-width:800px;margin:60px auto;padding:30px;background:white;border-radius:20px;box-shadow:0 15px 35px rgba(0,0,0,.08);}
+h1{text-align:center;font-family:'Playfair Display',serif;font-size:36px;margin-bottom:20px;}
+.order-section{margin-bottom:25px;}
+.order-section h3{font-size:20px;margin-bottom:10px;color:#d8a7a0;}
+.order-section p{margin-bottom:8px;font-size:15px;}
+.product-img{width:150px;height:150px;object-fit:cover;border-radius:12px;margin-bottom:10px;}
+.printBtn{display:block;margin:20px auto;padding:12px 25px;background:#d8a7a0;border:none;border-radius:22px;cursor:pointer;font-size:16px;}
+@media print {
+  .printBtn{display:none;}
+  body{background:white;}
+  .container{box-shadow:none;border:none;margin:0;padding:0;}
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+<h1>Order Detail</h1>
+
+<div class="order-section">
+<h3>Product Info</h3>
+<img id="prodImg" class="product-img" alt="Product Image">
+<p><strong>Product Name:</strong> <span id="prodName"></span></p>
+<p><strong>Quantity:</strong> <span id="prodQty"></span></p>
+<p><strong>Status:</strong> <span id="prodStatus"></span></p>
+</div>
+
+<div class="order-section">
+<h3>Customer Info</h3>
+<p><strong>Name:</strong> <span id="custName"></span></p>
+<p><strong>Phone:</strong> <span id="custPhone"></span></p>
+<p><strong>Email:</strong> <span id="custEmail"></span></p>
+<p><strong>Address:</strong> <span id="custAddress"></span></p>
+</div>
+
+<div class="order-section">
+<h3>Order Metadata</h3>
+<p><strong>Order ID:</strong> <span id="orderID"></span></p>
+<p><strong>Date:</strong> <span id="orderDate"></span></p>
+<p><strong>Payment Method:</strong> <span id="paymentMethod"></span></p>
+</div>
+
+<button class="printBtn" onclick="window.print()">🖨️ Print Order</button>
+</div>
+
+<script>
+window.onload = function(){
+  const order = JSON.parse(localStorage.getItem('currentOrder'));
+  if(!order){alert("No order data found."); return;}
+
+  // Product info
+  document.getElementById('prodImg').src = order.image || "https://via.placeholder.com/150";
+  document.getElementById('prodName').textContent = order.product;
+  document.getElementById('prodQty').textContent = order.qty;
+  document.getElementById('prodStatus').textContent = order.status;
+
+  // Customer info
+  document.getElementById('custName').textContent = order.customerName;
+  document.getElementById('custPhone').textContent = order.phone;
+  document.getElementById('custEmail').textContent = order.email;
+  document.getElementById('custAddress').textContent = order.address;
+
+  // Order metadata
+  document.getElementById('orderID').textContent = order.id || "N/A";
+  const now = new Date();
+  document.getElementById('orderDate').textContent = now.toLocaleString();
+
+  // Payment Method (default fallback)
+  const payment = order.paymentMethod || "Cash on Delivery";
+  document.getElementById('paymentMethod').textContent = payment;
+};
+</script>
+
+</body>
+</html>

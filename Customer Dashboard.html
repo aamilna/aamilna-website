@@ -3,17 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <title>AaMilNa • Customer Dashboard</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;1,600&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
-
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Poppins',sans-serif;background:#fff7f0;color:#4a3b47;overflow-x:hidden;}
 
 .bubble-bg{position:fixed;inset:0;z-index:-1;}
-.bubble{position:absolute;width:260px;height:260px;border-radius:50%;
-background:radial-gradient(circle at top left,rgba(255,255,255,.9),rgba(255,220,230,.45),rgba(200,150,170,.25));
-animation:float 30s infinite ease-in-out;}
+.bubble{position:absolute;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle at top left,rgba(255,255,255,.9),rgba(255,220,230,.45),rgba(200,150,170,.25));animation:float 30s infinite ease-in-out;}
 .bubble::after{content:"🌸";display:flex;align-items:center;justify-content:center;height:100%;font-size:70px;opacity:.35;}
 .bubble:nth-child(1){top:8%;left:6%;}
 .bubble:nth-child(2){top:55%;left:70%;}
@@ -43,16 +39,8 @@ h1{font-family:'Playfair Display',serif;font-style:italic;font-size:46px;}
 .likedItem{background:#fff;padding:15px;border-radius:22px;box-shadow:0 12px 30px rgba(0,0,0,.1);position:relative;}
 .likedItem img{width:100%;height:150px;object-fit:cover;border-radius:16px;}
 
-.heart{
-position:absolute;top:12px;right:14px;
-font-size:22px;cursor:pointer;
-animation:pulse 1.5s infinite;
-}
-@keyframes pulse{
-0%{transform:scale(1);}
-50%{transform:scale(1.2);}
-100%{transform:scale(1);}
-}
+.heart{position:absolute;top:12px;right:14px;font-size:22px;cursor:pointer;animation:pulse 1.5s infinite;}
+@keyframes pulse{0%{transform:scale(1);}50%{transform:scale(1.2);}100%{transform:scale(1);}}
 
 .modal{position:fixed;inset:0;background:#00000066;display:none;align-items:center;justify-content:center;}
 .modalContent{background:white;padding:30px;border-radius:26px;width:360px;position:relative;}
@@ -121,7 +109,7 @@ animation:pulse 1.5s infinite;
 <h3>Edit Profile</h3>
 <input id="nameInput" placeholder="Your name">
 <input id="emailInput" placeholder="Your email">
-<input type="file" accept="image/*" onchange="loadAvatar(event)">
+<input type="file" accept="image/*" id="avatarInput">
 <button class="editProfile" onclick="saveProfile()">Save</button>
 </div>
 </div>
@@ -137,22 +125,19 @@ animation:pulse 1.5s infinite;
 </div>
 
 <script>
-
-/* ===============================
-   DEMO CUSTOMER DATA (LOGIN REMOVED)
+/* =================================
+   CUSTOMER DASHBOARD WITH PERSISTENT AVATAR
 =================================*/
 
-let customer = {
+/* ===== CUSTOMER DATA ===== */
+let customer = JSON.parse(localStorage.getItem("customer")) || {
     id: "demo_customer_001",
     name: "AaMilNa Customer",
     email: "customer@aamilna.com",
     avatar: "https://via.placeholder.com/150"
 };
 
-/* ===============================
-   DEMO ORDERS, REVIEWS, LIKED ITEMS
-=================================*/
-
+/* ===== OTHER DATA ===== */
 let orders = JSON.parse(localStorage.getItem("orders")) || [
     { id:1, customerId:customer.id, productName:"Handmade Vase", status:"Delivered" },
     { id:2, customerId:customer.id, productName:"Floral Painting", status:"Processing" }
@@ -166,118 +151,125 @@ let liked = JSON.parse(localStorage.getItem("likedProducts")) || [
     { id:1, customerId:customer.id, name:"Ceramic Mug", image:"https://via.placeholder.com/200" }
 ];
 
-/* ===============================
-   LOAD PROFILE
-=================================*/
+/* ===== DOM ELEMENTS ===== */
+const avatarEl = document.getElementById("avatar");
+const cName = document.getElementById("cName");
+const cEmail = document.getElementById("cEmail");
+const nameInput = document.getElementById("nameInput");
+const emailInput = document.getElementById("emailInput");
+const orderList = document.getElementById("orderList");
+const reviewList = document.getElementById("reviewList");
+const likedList = document.getElementById("likedList");
+const reviewText = document.getElementById("reviewText");
+const avatarInput = document.getElementById("avatarInput");
 
-avatar.src = customer.avatar;
-cName.textContent = customer.name;
-cEmail.textContent = customer.email;
-
-/* ===============================
-   PROFILE FUNCTIONS
-=================================*/
-
-function openProfile(){
-profileModal.style.display="flex";
-nameInput.value = customer.name;
-emailInput.value = customer.email;
-}
-
-function loadAvatar(e){
-const r = new FileReader();
-r.onload = () => { customer.avatar = r.result; };
-r.readAsDataURL(e.target.files[0]);
-}
-
-function saveProfile(){
-customer.name = nameInput.value;
-customer.email = emailInput.value;
-avatar.src = customer.avatar;
-cName.textContent = customer.name;
-cEmail.textContent = customer.email;
-profileModal.style.display="none";
-}
-
-/* ===============================
-   ORDERS
-=================================*/
-
-function renderOrders(){
-orderList.innerHTML="";
-orders.filter(o=>o.customerId===customer.id)
-.forEach(o=>{
-orderList.innerHTML+=`
-<div class="order">
-<strong>${o.productName}</strong><br>
-<small>Status: ${o.status}</small>
-</div>`;
-});
-
-/* Save updated orders in localStorage */
-localStorage.setItem("orders", JSON.stringify(orders));
-}
-
-/* ===============================
-   REVIEWS
-=================================*/
-
-function openReview(){ reviewModal.style.display="flex"; }
-
-function saveReview(){
-reviews.push({ id:Date.now(), customerId:customer.id, text:reviewText.value });
-reviewModal.style.display="none";
-reviewText.value="";
-renderReviews();
-}
-
-function renderReviews(){
-reviewList.innerHTML="";
-reviews.filter(r=>r.customerId===customer.id)
-.forEach(r=>{ reviewList.innerHTML+=`<p style="margin-bottom:10px;">"${r.text}"</p>`; });
-localStorage.setItem("reviews", JSON.stringify(reviews));
-}
-
-/* ===============================
-   LIKED PRODUCTS
-=================================*/
-
-function renderLiked(){
-likedList.innerHTML="";
-liked.filter(p=>p.customerId===customer.id)
-.forEach((p,i)=>{
-likedList.innerHTML+=`
-<div class="likedItem">
-<span class="heart" onclick="removeLiked(${i})">💖</span>
-<img src="${p.image}">
-<h4>${p.name}</h4>
-</div>`;
-});
-localStorage.setItem("likedProducts", JSON.stringify(liked));
-}
-
-function removeLiked(index){
-liked = liked.filter((p,i)=>i!==index);
-renderLiked();
-}
-
-/* ===============================
-   LOGOUT
-=================================*/
-
-function logout(){
-alert("You are logged out (demo mode).");
-}
-
-/* ===============================
-   INITIAL RENDER
-=================================*/
-
+/* ===== INITIAL RENDER ===== */
+renderProfile();
 renderOrders();
 renderReviews();
 renderLiked();
 
+/* ===== PROFILE FUNCTIONS ===== */
+function renderProfile(){
+    avatarEl.src = customer.avatar;
+    cName.textContent = customer.name;
+    cEmail.textContent = customer.email;
+    localStorage.setItem("customer", JSON.stringify(customer));
+}
+
+function openProfile(){
+    profileModal.style.display="flex";
+    nameInput.value = customer.name;
+    emailInput.value = customer.email;
+}
+
+// Load avatar as Base64 locally
+avatarInput.addEventListener("change", function(e){
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = function(event){
+        customer.avatar = event.target.result;
+        renderProfile();
+    }
+    reader.readAsDataURL(file);
+});
+
+function saveProfile(){
+    customer.name = nameInput.value.trim() || customer.name;
+    customer.email = emailInput.value.trim() || customer.email;
+    renderProfile(); // persist to localStorage
+    profileModal.style.display="none";
+}
+
+/* ===== ORDERS ===== */
+function renderOrders(){
+    orderList.innerHTML="";
+    orders.filter(o=>o.customerId===customer.id).forEach(o=>{
+        orderList.innerHTML+=`
+        <div class="order">
+        <strong>${o.productName}</strong><br>
+        <small>Status: ${o.status}</small>
+        </div>`;
+    });
+    localStorage.setItem("orders", JSON.stringify(orders));
+}
+
+/* ===== REVIEWS ===== */
+function openReview(){ reviewModal.style.display="flex"; }
+
+function saveReview(){
+    if(!reviewText.value.trim()){ alert("Write something first"); return; }
+    reviews.push({ id:Date.now(), customerId:customer.id, text:reviewText.value });
+    reviewModal.style.display="none";
+    reviewText.value="";
+    renderReviews();
+}
+
+function renderReviews(){
+    reviewList.innerHTML="";
+    reviews.filter(r=>r.customerId===customer.id).forEach(r=>{
+        reviewList.innerHTML+=`<p style="margin-bottom:10px;">"${r.text}"</p>`;
+    });
+    localStorage.setItem("reviews", JSON.stringify(reviews));
+}
+
+/* ===== LIKED ITEMS ===== */
+function renderLiked(){
+    likedList.innerHTML="";
+    liked.filter(p=>p.customerId===customer.id).forEach((p,i)=>{
+        likedList.innerHTML+=`
+        <div class="likedItem">
+        <span class="heart" onclick="removeLiked(${i})">💖</span>
+        <img src="${p.image}">
+        <h4>${p.name}</h4>
+        </div>`;
+    });
+    localStorage.setItem("likedProducts", JSON.stringify(liked));
+}
+
+function removeLiked(index){
+    liked = liked.filter((p,i)=>i!==index);
+    renderLiked();
+}
+
+/* ===== CART (ready for integration) ===== */
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+/* ===== LOGOUT ===== */
+function logout(){
+    alert("You are logged out.");
+    // Data persists in localStorage
+}
 </script>
 
 </body>
 </html>
+
+
+
+
+
+
+
+

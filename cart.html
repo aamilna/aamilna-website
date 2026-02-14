@@ -51,11 +51,13 @@ body{
   width:120px;height:120px;
   object-fit:cover;border-radius:16px;
 }
-.qty{display:flex;gap:10px;margin-top:10px;}
+.qty{display:flex;gap:10px;margin-top:10px;align-items:center;}
 .qty button{
   background:#d8a7a0;border:none;
   padding:6px 12px;border-radius:50%;
   cursor:pointer;
+  font-weight:bold;
+  font-size:16px;
 }
 .remove{
   background:none;border:none;
@@ -68,12 +70,16 @@ body{
   padding:25px;
   border-radius:26px;
   box-shadow:0 15px 35px rgba(0,0,0,.12);
+  max-width:400px;
+  margin:0 auto 50px;
 }
 .summary p{
   display:flex;
   justify-content:space-between;
   margin-bottom:10px;
+  font-weight:500;
 }
+hr{border:none;border-top:1px solid #ddd;margin:10px 0;}
 .checkout{
   margin-top:20px;
   width:100%;
@@ -82,6 +88,35 @@ body{
   border-radius:30px;
   background:#d8a7a0;
   cursor:pointer;
+  font-weight:600;
+  font-size:16px;
+}
+.checkout:hover{background:#c9978f;}
+.empty-cart{
+  text-align:center;
+  font-size:18px;
+  opacity:0.7;
+  margin-top:40px;
+}
+
+/* PAYMENT OPTIONS */
+.payment-method{
+  margin-top:15px;
+  font-size:16px;
+}
+.payment-method label{
+  display:flex;
+  align-items:center;
+  margin-bottom:8px;
+  cursor:pointer;
+}
+.payment-method input{
+  margin-right:10px;
+}
+.note{
+  font-size:14px;
+  opacity:0.7;
+  margin-top:5px;
 }
 </style>
 </head>
@@ -99,26 +134,45 @@ body{
 <section class="cart">
   <div class="summary">
     <p><span>Subtotal</span><span id="subtotal">0 PKR</span></p>
-    <p><span>Platform Fee</span><span>10 PKR</span></p>
-    <hr><br>
+    <p><span>Platform Fee</span><span id="platformFee">10 PKR</span></p>
+    <hr>
     <p><strong>Total</strong><strong id="total">0 PKR</strong></p>
+
+    <div class="payment-method">
+      <p><strong>Select Payment Method:</strong></p>
+      <label><input type="radio" name="payment" value="cod" checked> Cash on Delivery</label>
+      <label><input type="radio" name="payment" value="easypaisa"> Easypaisa</label>
+      <div id="easypaisa-note" class="note">💡 50% advance payment recommended. You can choose to pay full if you prefer.</div>
+      <label id="full-advance-option" style="display:none; margin-top:5px;">
+        <input type="checkbox" id="fullPayment"> Pay full amount now
+      </label>
+    </div>
+
     <button class="checkout" onclick="checkout()">Confirm Checkout</button>
   </div>
 </section>
 
 <script>
+// --- LOAD CART & ORDERS ---
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 let orders = JSON.parse(localStorage.getItem("orders")) || [];
-const box = document.getElementById("cart");
 
+const box = document.getElementById("cart");
+const paymentRadios = document.querySelectorAll('input[name="payment"]');
+const easypaisaNote = document.getElementById("easypaisa-note");
+const fullAdvanceOption = document.getElementById("full-advance-option");
+const platformFee = 10;
+
+// --- RENDER CART ---
 function render(){
   box.innerHTML="";
   let subtotal = 0;
 
   if(cart.length === 0){
-    box.innerHTML="<p>Your cart is empty.</p>";
-    document.getElementById("subtotal").innerText="0 PKR";
-    document.getElementById("total").innerText="0 PKR";
+    box.innerHTML = `<p class="empty-cart">Your cart is empty.</p>`;
+    document.getElementById("subtotal").innerText = "0 PKR";
+    document.getElementById("platformFee").innerText = platformFee + " PKR";
+    document.getElementById("total").innerText = "0 PKR";
     return;
   }
 
@@ -126,72 +180,114 @@ function render(){
     const price = Number(item.price);
     subtotal += price * item.qty;
 
-    box.innerHTML += `
-      <div class="item">
-        <img src="${item.image}" alt="${item.name}">
-        <div>
-          <h4>${item.name}</h4>
-          <p>${price} PKR</p>
-          <div class="qty">
-            <button onclick="changeQty(${i},-1)">−</button>
-            <span>${item.qty}</span>
-            <button onclick="changeQty(${i},1)">+</button>
-          </div>
+    const itemDiv = document.createElement("div");
+    itemDiv.className = "item";
+
+    itemDiv.innerHTML = `
+      <img src="${item.image}" alt="${item.name}">
+      <div>
+        <h4>${item.name}</h4>
+        <p>${price} PKR</p>
+        <div class="qty">
+          <button onclick="changeQty(${i},-1)">−</button>
+          <span id="qty-${i}">${item.qty}</span>
+          <button onclick="changeQty(${i},1)">+</button>
         </div>
-        <button class="remove" onclick="removeItem(${i})">🗑️</button>
       </div>
+      <button class="remove" onclick="removeItem(${i})">🗑️</button>
     `;
+
+    box.appendChild(itemDiv);
   });
 
   document.getElementById("subtotal").innerText = subtotal + " PKR";
-  document.getElementById("total").innerText = (subtotal + 10) + " PKR";
+  document.getElementById("platformFee").innerText = platformFee + " PKR";
+  document.getElementById("total").innerText = (subtotal + platformFee) + " PKR";
 }
 
-function changeQty(i,val){
+// --- CHANGE QUANTITY ---
+function changeQty(i, val){
   cart[i].qty += val;
   if(cart[i].qty < 1) cart[i].qty = 1;
-  save();
-}
-
-function removeItem(i){
-  cart.splice(i,1);
-  save();
-}
-
-function save(){
   localStorage.setItem("cart", JSON.stringify(cart));
   render();
 }
 
-/* ✅ CLEAN ORDER CREATION */
+// --- REMOVE ITEM ---
+function removeItem(i){
+  if(confirm("Remove this item from cart?")){
+    cart.splice(i,1);
+    localStorage.setItem("cart", JSON.stringify(cart));
+    render();
+  }
+}
+
+// --- PAYMENT METHOD LOGIC ---
+paymentRadios.forEach(radio=>{
+  radio.addEventListener('change', ()=>{
+    if(radio.value === 'easypaisa'){
+      easypaisaNote.style.display = "block";
+      fullAdvanceOption.style.display = "block";
+    } else {
+      easypaisaNote.style.display = "none";
+      fullAdvanceOption.style.display = "none";
+    }
+  });
+});
+
+// --- CHECKOUT ---
 function checkout(){
   if(cart.length === 0){
-    alert("Cart is empty");
+    alert("Cart is empty!");
     return;
   }
 
+  const selectedPayment = document.querySelector('input[name="payment"]:checked').value;
+  let subtotal = Number(document.getElementById("subtotal").innerText.replace(" PKR",""));
+  let total = subtotal + platformFee;
+
+  let advanceAmount = total;
+  if(selectedPayment === "easypaisa"){
+    const fullPaymentChecked = document.getElementById("fullPayment").checked;
+    if(!fullPaymentChecked){
+      advanceAmount = Math.ceil(total / 2);
+    }
+  }
+
   cart.forEach(item=>{
+    const itemTotal = item.price * item.qty;
+    const itemPlatformFee = Math.ceil((itemTotal / subtotal) * platformFee); // proportional fee per item
+    const itemArtisanShare = itemTotal - itemPlatformFee;
+
     orders.push({
       productName: item.name,
       image: item.image,
       price: Number(item.price),
       qty: item.qty,
-      artisanId: item.artisanId,
-      status: "Order Placed"
+      artisanId: item.artisanId || "Unknown",
+      status: "Order Placed",
+      paymentMethod: selectedPayment,
+      paidAmount: advanceAmount,
+      platformFee: itemPlatformFee,
+      artisanShare: itemArtisanShare,
+      date: new Date().toLocaleString()
     });
   });
 
   localStorage.setItem("orders", JSON.stringify(orders));
   localStorage.removeItem("cart");
 
-  alert("✅ Order placed successfully");
-  location.href="shop.html";
+  alert(`✅ Order placed successfully!\nPayment Method: ${selectedPayment}\nAmount Paid: ${advanceAmount} PKR\nPlatform Fee Deducted: ${platformFee} PKR`);
+  window.location.href="shop.html";
 }
 
+// --- INITIALIZE ---
 render();
 </script>
+
 </body>
 </html>
+
 
 
 
