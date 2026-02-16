@@ -25,10 +25,7 @@ header{display:flex;justify-content:space-between;align-items:center;padding:22p
 header h1{font-family:'Playfair Display',serif;font-style:italic;}
 
 /* ADMIN PROFILE */
-.profile-container{
-  cursor:pointer;
-  position:relative;
-}
+.profile-container{cursor:pointer;position:relative;}
 .profile-avatar{width:50px;height:50px;border-radius:50%;object-fit:cover;border:2px solid #d8a7a0;}
 .profile-dropdown{
   position:absolute;
@@ -105,18 +102,23 @@ textarea{width:100%;padding:8px;border-radius:12px;border:1px solid #ddd;margin-
 </section>
 
 <script>
-// ===== ADMIN LOGIN =====
-const ADMIN_PASSWORD = "AaMilNaAdmin123";
+// ===== ADMIN LOGIN (FIXED FOR LIVE HOSTING) =====
+const ADMIN_PASSWORD = "alphabetics#678";
 let adminLoggedIn = sessionStorage.getItem("adminLoggedIn");
 
 if(!adminLoggedIn){
-  const pass = prompt("Enter Admin Password:");
-  if(pass === ADMIN_PASSWORD){
-    sessionStorage.setItem("adminLoggedIn","true");
-    adminLoggedIn = true;
-  } else {
-    alert("Incorrect password! Redirecting to homepage.");
+  let pass = prompt("Enter Admin Password:");
+
+  if(pass === null){
     window.location.href = "index.html";
+  } else {
+    pass = pass.trim();
+    if(pass === ADMIN_PASSWORD){
+      sessionStorage.setItem("adminLoggedIn","true");
+    } else {
+      alert("Incorrect password! Redirecting to homepage.");
+      window.location.href = "index.html";
+    }
   }
 }
 
@@ -143,7 +145,10 @@ function renderProfile(){
   const avatarImg = document.getElementById('profileAvatar');
   const dropdown = document.getElementById('profileDropdown');
 
-  avatarImg.addEventListener('click',(e)=>{e.stopPropagation(); dropdown.style.display = dropdown.style.display==='flex'?'none':'flex';});
+  avatarImg.addEventListener('click',(e)=>{
+    e.stopPropagation();
+    dropdown.style.display = dropdown.style.display==='flex'?'none':'flex';
+  });
 
   document.getElementById('logoutBtn').addEventListener('click', ()=>{
     sessionStorage.removeItem("adminLoggedIn");
@@ -174,11 +179,14 @@ function renderProfile(){
     }
   });
 
-  document.addEventListener('click',(e)=>{if(!profileContainer.contains(e.target)) dropdown.style.display='none';});
+  document.addEventListener('click',(e)=>{
+    if(!profileContainer.contains(e.target)) dropdown.style.display='none';
+  });
 }
 renderProfile();
 
-// ===== INITIAL PRODUCTS =====
+/* ===== REST OF YOUR PRODUCT LOGIC UNCHANGED ===== */
+
 if(!localStorage.getItem("allProducts")){
   const sampleProducts = [
     {name:"Handmade Clay Vase",description:"Beautiful rustic vase made by hand.",price:1200,artisanName:"Sara Ali",images:["https://res.cloudinary.com/demo/image/upload/v1699999999/vase1.jpg"],statusAdmin:"Pending",reason:"",date:new Date().toLocaleString()},
@@ -187,25 +195,38 @@ if(!localStorage.getItem("allProducts")){
   localStorage.setItem("allProducts", JSON.stringify(sampleProducts));
 }
 
-// FETCH PRODUCTS
 let products = JSON.parse(localStorage.getItem("allProducts")) || [];
-products.forEach(p=>{if(!p.statusAdmin)p.statusAdmin="Pending"; if(!p.reason)p.reason=""; if(!p.date)p.date=new Date().toLocaleString();});
+products.forEach(p=>{
+  if(!p.statusAdmin)p.statusAdmin="Pending";
+  if(!p.reason)p.reason="";
+  if(!p.date)p.date=new Date().toLocaleString();
+});
 
-// CONTAINERS
 const pendingContainer = document.getElementById("pendingProducts");
 const approvedContainer = document.getElementById("approvedProducts");
 const rejectedContainer = document.getElementById("rejectedProducts");
 const deletedContainer = document.getElementById("deletedProducts");
 
-// RENDER PRODUCTS
 function render(){
-  pendingContainer.innerHTML=""; approvedContainer.innerHTML=""; rejectedContainer.innerHTML=""; deletedContainer.innerHTML="";
+  pendingContainer.innerHTML="";
+  approvedContainer.innerHTML="";
+  rejectedContainer.innerHTML="";
+  deletedContainer.innerHTML="";
+
   products.forEach((p,i)=>{
     const div=document.createElement("div");
-    div.className="card"; div.dataset.index=i;
+    div.className="card";
+    div.dataset.index=i;
+
     let imgHTML='';
-    if(p.images && p.images.length){p.images.forEach(url=>{imgHTML+=`<img src="${url}" alt="${p.name}">`;});}
-    else{imgHTML=`<img src="https://via.placeholder.com/300" alt="placeholder">`;}
+    if(p.images && p.images.length){
+      p.images.forEach(url=>{
+        imgHTML+=`<img src="${url}" alt="${p.name}">`;
+      });
+    } else {
+      imgHTML=`<img src="https://via.placeholder.com/300" alt="placeholder">`;
+    }
+
     div.innerHTML=`
       ${imgHTML}
       <h4>${p.name}</h4>
@@ -221,6 +242,7 @@ function render(){
         <button class="delete">Delete</button>
       </div>`:""}
     `;
+
     if(p.statusAdmin==="Pending") pendingContainer.appendChild(div);
     else if(p.statusAdmin==="Approved") approvedContainer.appendChild(div);
     else if(p.statusAdmin==="Rejected") rejectedContainer.appendChild(div);
@@ -228,41 +250,48 @@ function render(){
   });
 }
 
-// PENDING ACTIONS
 pendingContainer.addEventListener("click", e=>{
   const card=e.target.closest(".card");
   if(!card) return;
   const index=parseInt(card.dataset.index);
   const reasonField=card.querySelector("textarea");
+
   if(e.target.classList.contains("approve")){
-    products[index].statusAdmin="Approved"; products[index].reason=""; products[index].date=new Date().toLocaleString();
+    products[index].statusAdmin="Approved";
+    products[index].reason="";
+    products[index].date=new Date().toLocaleString();
     save();
   }
+
   if(e.target.classList.contains("reject")){
-    products[index].statusAdmin="Rejected"; products[index].reason=reasonField.value.trim()||"No reason provided"; products[index].date=new Date().toLocaleString();
+    products[index].statusAdmin="Rejected";
+    products[index].reason=reasonField.value.trim()||"No reason provided";
+    products[index].date=new Date().toLocaleString();
     save();
   }
+
   if(e.target.classList.contains("delete")){
     if(confirm("Delete permanently?")){
-      products[index].statusAdmin="Deleted"; products[index].date=new Date().toLocaleString();
+      products[index].statusAdmin="Deleted";
+      products[index].date=new Date().toLocaleString();
       save();
     }
   }
 });
 
-// SAVE FUNCTION
 function save(){
   localStorage.setItem("allProducts",JSON.stringify(products));
   localStorage.setItem("productsUpdatedAt", new Date().toISOString());
   render();
 }
 
-// INITIAL RENDER
 render();
 </script>
 
 </body>
 </html>
+
+
 
 
 
