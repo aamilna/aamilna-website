@@ -6,15 +6,22 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;1,600&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 body{font-family:'Poppins',sans-serif;background:#fff7f0;color:#4a3b47;margin:0;padding:0;}
-.container{max-width:800px;margin:60px auto;padding:30px;background:white;border-radius:20px;box-shadow:0 15px 35px rgba(0,0,0,.08);}
+.container{max-width:900px;margin:60px auto;padding:30px;background:white;border-radius:20px;box-shadow:0 15px 35px rgba(0,0,0,.08);}
 h1{text-align:center;font-family:'Playfair Display',serif;font-size:36px;margin-bottom:20px;}
 .order-section{margin-bottom:25px;}
 .order-section h3{font-size:20px;margin-bottom:10px;color:#d8a7a0;}
 .order-section p{margin-bottom:8px;font-size:15px;}
 .product-img{width:150px;height:150px;object-fit:cover;border-radius:12px;margin-bottom:10px;}
-.printBtn{display:block;margin:20px auto;padding:12px 25px;background:#d8a7a0;border:none;border-radius:22px;cursor:pointer;font-size:16px;}
+.printBtn{display:block;margin:20px auto;padding:12px 25px;background:#d8a7a0;border:none;border-radius:22px;cursor:pointer;font-size:16px;transition:0.3s;}
+.printBtn:hover{background:#c99b99;}
+table{width:100%;border-collapse:collapse;margin-top:10px;}
+table th, table td{border:1px solid #ddd;padding:10px;text-align:left;}
+table th{background:#f8e5e5;}
+input[type="date"]{padding:6px 10px;border-radius:8px;border:1px solid #ccc;font-size:14px;}
+label{font-weight:500;margin-right:6px;}
 @media print {
   .printBtn{display:none;}
+  input[type="date"]{border:none;background:transparent;}
   body{background:white;}
   .container{box-shadow:none;border:none;margin:0;padding:0;}
 }
@@ -25,14 +32,26 @@ h1{text-align:center;font-family:'Playfair Display',serif;font-size:36px;margin-
 <div class="container">
 <h1>Order Detail</h1>
 
+<!-- Products Section -->
 <div class="order-section">
-<h3>Product Info</h3>
-<img id="prodImg" class="product-img" alt="Product Image">
-<p><strong>Product Name:</strong> <span id="prodName"></span></p>
-<p><strong>Quantity:</strong> <span id="prodQty"></span></p>
-<p><strong>Status:</strong> <span id="prodStatus"></span></p>
+<h3>Products</h3>
+<table id="productsTable">
+  <thead>
+    <tr>
+      <th>Image</th>
+      <th>Name</th>
+      <th>Artisan / Brand</th>
+      <th>Quantity</th>
+      <th>Price</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- Products will be dynamically injected here -->
+  </tbody>
+</table>
 </div>
 
+<!-- Customer Info -->
 <div class="order-section">
 <h3>Customer Info</h3>
 <p><strong>Name:</strong> <span id="custName"></span></p>
@@ -41,10 +60,15 @@ h1{text-align:center;font-family:'Playfair Display',serif;font-size:36px;margin-
 <p><strong>Address:</strong> <span id="custAddress"></span></p>
 </div>
 
+<!-- Order Metadata -->
 <div class="order-section">
 <h3>Order Metadata</h3>
 <p><strong>Order ID:</strong> <span id="orderID"></span></p>
-<p><strong>Date:</strong> <span id="orderDate"></span></p>
+<p><strong>Order Date:</strong> <span id="orderDate"></span></p>
+<p>
+  <label for="dispatchDate"><strong>Dispatch Date:</strong></label>
+  <input type="date" id="dispatchDate">
+</p>
 <p><strong>Payment Method:</strong> <span id="paymentMethod"></span></p>
 </div>
 
@@ -53,31 +77,63 @@ h1{text-align:center;font-family:'Playfair Display',serif;font-size:36px;margin-
 
 <script>
 window.onload = function(){
+  // Get the order from localStorage
   const order = JSON.parse(localStorage.getItem('currentOrder'));
-  if(!order){alert("No order data found."); return;}
+  if(!order){ 
+    alert("No order data found."); 
+    window.location.href = "artisan-dashboard.html"; // Redirect back if no data
+    return;
+  }
 
-  // Product info
-  document.getElementById('prodImg').src = order.image || "https://via.placeholder.com/150";
-  document.getElementById('prodName').textContent = order.product;
-  document.getElementById('prodQty').textContent = order.qty;
-  document.getElementById('prodStatus').textContent = order.status;
+  // --- Populate products table ---
+  const productsTableBody = document.querySelector("#productsTable tbody");
+  productsTableBody.innerHTML = ""; // Clear if anything exists
+  const products = order.products || [{ 
+    image: order.image || "https://via.placeholder.com/150",
+    name: order.product,
+    artisanName: order.artisanName || "Unknown Artisan",
+    qty: order.qty,
+    price: order.price
+  }];
+  products.forEach(p => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td><img src="${p.image}" class="product-img" alt="${p.name}"></td>
+      <td>${p.name}</td>
+      <td>${p.artisanName || "Unknown Artisan"}</td>
+      <td>${p.qty}</td>
+      <td>PKR ${p.price}</td>
+    `;
+    productsTableBody.appendChild(row);
+  });
 
-  // Customer info
+  // --- Customer Info ---
   document.getElementById('custName').textContent = order.customerName;
   document.getElementById('custPhone').textContent = order.phone;
   document.getElementById('custEmail').textContent = order.email;
   document.getElementById('custAddress').textContent = order.address;
 
-  // Order metadata
+  // --- Order Metadata ---
   document.getElementById('orderID').textContent = order.id || "N/A";
-  const now = new Date();
-  document.getElementById('orderDate').textContent = now.toLocaleString();
+  const orderDate = new Date(order.date || Date.now());
+  document.getElementById('orderDate').textContent = orderDate.toLocaleString();
 
-  // Payment Method (default fallback)
-  const payment = order.paymentMethod || "Cash on Delivery";
-  document.getElementById('paymentMethod').textContent = payment;
+  const dispatchInput = document.getElementById('dispatchDate');
+  // Pre-fill dispatch date if exists, else today
+  const dispatchDate = order.dispatchDate ? new Date(order.dispatchDate) : new Date();
+  dispatchInput.valueAsDate = dispatchDate;
+
+  // Save dispatch date back to localStorage when changed
+  dispatchInput.addEventListener('change', function(){
+    order.dispatchDate = dispatchInput.value;
+    localStorage.setItem('currentOrder', JSON.stringify(order));
+  });
+
+  document.getElementById('paymentMethod').textContent = order.paymentMethod || "Cash on Delivery";
 };
 </script>
 
 </body>
 </html>
+
+
