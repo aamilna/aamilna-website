@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard • AaMilNa</title>
+<style>
+body{font-family:sans-serif;background:#fff7f0;padding:40px;color:#4a3b47;}
+h1{font-family:'Playfair Display',serif;}
+button{padding:10px 20px;border:none;background:#d8a7a0;border-radius:20px;cursor:pointer;font-weight:500;}
+button:hover{background:#c8928a;color:white;}
+</style>
+</head>
+<body>
+
+<h1>Dashboard</h1>
+<div id="userInfo"></div>
+<button id="logoutBtn">Logout</button>
+
+<script>
+// Get user
+let customer = JSON.parse(localStorage.getItem("customer"));
+let artisan = JSON.parse(localStorage.getItem("artisanProfile"));
+let user = customer || artisan;
+
+if(!user){
+  alert("You are not logged in. Redirecting to Shop.");
+  window.location.href = "customer-dashboard.html";
+}else{
+  document.getElementById("userInfo").innerHTML = `
+    <p><strong>Name:</strong> ${user.name}</p>
+    <p><strong>Email:</strong> ${user.email}</p>
+    ${user.phone?`<p><strong>Phone:</strong> ${user.phone}</p>`:''}
+    ${user.address?`<p><strong>Address:</strong> ${user.address}</p>`:''}
+  `;
+}
+
+document.getElementById("logoutBtn").addEventListener('click',()=>{
+  if(customer) localStorage.removeItem('customer');
+  if(artisan) localStorage.removeItem('artisanProfile');
+  window.location.href = "index.html";
+});
+</script>
+
+</body>
+</html>

@@ -9,58 +9,68 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Poppins',sans-serif;background:#fff7f0;color:#4a3b47;overflow-x:hidden;}
 
+/* 🌸 Floating Bubbles */
 .bubble-bg{position:fixed;inset:0;z-index:-1;}
-.bubble{position:absolute;width:260px;height:260px;border-radius:50%;
-background:radial-gradient(circle at top left,rgba(255,255,255,.9),rgba(255,220,230,.45),rgba(200,150,170,.25));
-animation:float 30s infinite ease-in-out;}
+.bubble{position:absolute;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle at top left,rgba(255,255,255,.9),rgba(255,220,230,.45),rgba(200,150,170,.25));animation:float 30s infinite ease-in-out;}
 .bubble::after{content:"🌸";display:flex;align-items:center;justify-content:center;height:100%;font-size:70px;opacity:.35;}
 .bubble:nth-child(1){top:8%;left:6%;}
 .bubble:nth-child(2){top:55%;left:70%;}
 .bubble:nth-child(3){top:30%;left:40%;}
-@keyframes float{50%{transform:translateY(-60px)}}
+@keyframes float{50%{transform:translateY(-60px);}}
 
+/* Header */
 header{display:flex;justify-content:space-between;align-items:center;padding:22px 50px;background:rgba(255,255,255,.85);}
-header img{height:90px;}
+header img{height:90px;cursor:pointer;}
 header .actions{display:flex;gap:12px;}
 header button{background:#d8a7a0;border:none;padding:10px 22px;border-radius:30px;cursor:pointer;}
 
+/* Dashboard Layout */
 .dashboard{max-width:1300px;margin:120px auto 80px;padding:0 30px;}
 h1{font-family:'Playfair Display',serif;font-style:italic;font-size:46px;}
 
-.profileBox{display:flex;gap:20px;align-items:center;}
+/* Profile Box */
+.profileBox{display:flex;gap:20px;align-items:flex-start;}
 .avatar{width:90px;height:90px;border-radius:50%;object-fit:cover;border:3px solid #d8a7a0;}
 .editProfile{margin-top:10px;background:#d8a7a0;border:none;padding:6px 16px;border-radius:20px;font-size:13px;cursor:pointer;}
 
-.layout{display:grid;grid-template-columns:2fr 1fr;gap:30px;}
+/* Profile Summary Card */
+.profileSummary{background:#fff;padding:20px;border-radius:22px;box-shadow:0 15px 30px rgba(0,0,0,.12);margin-top:10px;display:flex;flex-direction:column;gap:8px;font-size:14px;}
+.profileSummary span{font-weight:500;display:inline-block;width:110px;}
 
+/* Grid Layout */
+.layout{display:grid;grid-template-columns:2fr 1fr;gap:30px;margin-top:20px;}
 .box{background:#fff;padding:25px;border-radius:28px;box-shadow:0 20px 40px rgba(0,0,0,.12);margin-bottom:30px;}
 
+/* Orders */
 .orders{max-height:65vh;overflow-y:auto;}
-.order{border-bottom:1px solid #eee;padding:12px 0;}
+.order{border-bottom:1px solid #eee;padding:12px 0;display:flex;gap:12px;align-items:center;}
+.order img{width:60px;height:60px;object-fit:cover;border-radius:12px;}
 
+/* Liked Items */
 .likedGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px;}
 .likedItem{background:#fff;padding:15px;border-radius:22px;box-shadow:0 12px 30px rgba(0,0,0,.1);position:relative;}
 .likedItem img{width:100%;height:150px;object-fit:cover;border-radius:16px;}
-
 .heart{position:absolute;top:12px;right:14px;font-size:22px;cursor:pointer;}
 
+/* Modals */
 .modal{position:fixed;inset:0;background:#00000066;display:none;align-items:center;justify-content:center;}
-.modalContent{background:white;padding:30px;border-radius:26px;width:360px;position:relative;}
-.modalContent input,.modalContent textarea{width:100%;margin-bottom:10px;padding:8px;border-radius:12px;border:1px solid #ddd;}
+.modalContent{background:white;padding:30px;border-radius:26px;width:400px;position:relative;}
+.modalContent input{width:100%;margin-bottom:10px;padding:8px;border-radius:12px;border:1px solid #ddd;}
 .closeBtn{position:absolute;top:12px;right:16px;font-size:20px;cursor:pointer;color:#b96a6a;}
+.emptyState{opacity:.6;font-size:14px;}
 </style>
 </head>
 
 <body>
 
 <div class="bubble-bg">
-<div class="bubble"></div>
-<div class="bubble"></div>
-<div class="bubble"></div>
+  <div class="bubble"></div>
+  <div class="bubble"></div>
+  <div class="bubble"></div>
 </div>
 
 <header>
-<img src="logo.png">
+<img src="logo.png" alt="AaMilNa Logo" onclick="location.href='index.html'">
 <div class="actions">
 <button onclick="location.href='index.html'">Home</button>
 <button onclick="logout()">Logout</button>
@@ -70,37 +80,51 @@ h1{font-family:'Playfair Display',serif;font-style:italic;font-size:46px;}
 <section class="dashboard">
 <h1>Customer Dashboard</h1>
 
+<!-- Profile Box -->
 <div class="box profileBox">
-<img id="avatar" class="avatar">
+<img id="avatar" class="avatar" alt="Profile Avatar">
 <div>
 <strong id="cName"></strong><br>
 <small id="cEmail"></small><br>
 <button class="editProfile" onclick="openProfile()">Edit Profile</button>
+
+<!-- Profile Summary -->
+<div class="profileSummary" id="profileSummary"></div>
 </div>
 </div>
 
 <div class="layout">
+  <div>
+    <!-- Orders Section -->
+    <div class="box">
+      <h3>🛍 Order History</h3><br>
+      <div class="orders" id="orderList"></div>
+    </div>
 
-<div>
-<div class="box">
-<h3>🛍 Order History</h3><br>
-<div class="orders" id="orderList"></div>
-</div>
+    <!-- Reviews Section -->
+    <div class="box">
+      <h3>⭐ Your Reviews</h3><br>
+      <div id="reviewList"></div>
+      <button class="editProfile" onclick="openReview()">Write Review</button>
+    </div>
+  </div>
 
-<div class="box">
-<h3>⭐ Your Reviews</h3><br>
-<div id="reviewList"></div>
-<button class="editProfile" onclick="openReview()">Write Review</button>
-</div>
-</div>
+  <div>
+    <!-- Liked Items -->
+    <div class="box">
+      <h3>❤️ Liked Items</h3><br>
+      <div class="likedGrid" id="likedList"></div>
+    </div>
 
-<div>
-<div class="box">
-<h3>❤️ Liked Items</h3><br>
-<div class="likedGrid" id="likedList"></div>
-</div>
-</div>
-
+    <!-- Payments Section -->
+    <div class="box">
+      <h3>💰 Payments</h3><br>
+      <div id="paymentInfo">
+        <p id="easypaisaDisplay" class="emptyState">No EasyPaisa account added yet.</p>
+        <button class="editProfile" onclick="openPayment()">Add / Edit EasyPaisa</button>
+      </div>
+    </div>
+  </div>
 </div>
 </section>
 
@@ -109,156 +133,258 @@ h1{font-family:'Playfair Display',serif;font-style:italic;font-size:46px;}
 <div class="modalContent">
 <span class="closeBtn" onclick="closeProfile()">&times;</span>
 <h3>Edit Profile</h3>
-<input id="nameInput" placeholder="Your name">
-<input id="emailInput" placeholder="Your email">
+<input id="nameInput" placeholder="Your Name">
+<input id="phoneInput" placeholder="Phone Number">
+<input id="emailInput" placeholder="Email">
+<input id="countryInput" placeholder="Country">
+<input id="cityInput" placeholder="City">
+<input id="addressInput" placeholder="Home Address">
 <input type="file" accept="image/*" id="avatarInput">
 <button class="editProfile" onclick="saveProfile()">Save</button>
 </div>
 </div>
 
+<!-- Payment Modal -->
+<div class="modal" id="paymentModal">
+<div class="modalContent">
+<span class="closeBtn" onclick="closePayment()">&times;</span>
+<h3>EasyPaisa Account</h3>
+<input id="easypaisaInput" placeholder="EasyPaisa Account Number">
+<input id="accountHolderInput" placeholder="Account Holder Name">
+<button class="editProfile" onclick="savePayment()">Save</button>
+</div>
+</div>
+
 <script>
+// Cloudinary Settings
+const CLOUD_NAME = "dfmpbdhrv";
+const UPLOAD_PRESET = "aamilna_unsigned";
 
-/* ===============================
-   FULL CUSTOMER SYSTEM
-   =============================== */
-
-let currentAvatar = "";
 let customer = null;
+let currentAvatar = "";
 
-/* LOAD PROFILE */
+/* Safe parse */
+function safeParse(key){
+    try{ return JSON.parse(localStorage.getItem(key)); }
+    catch{ localStorage.removeItem(key); return null; }
+}
+
+/* Test data for soft launch */
+function initTestData(){
+    if(!safeParse("orders")){
+        localStorage.setItem("orders", JSON.stringify([
+            {id:"ORD001", item:"Handmade Vase", date:"2026-02-10", image:"https://via.placeholder.com/60"},
+            {id:"ORD002", item:"Floral Candle Set", date:"2026-02-12", image:"https://via.placeholder.com/60"},
+            {id:"ORD003", item:"Silk Scarf", date:"2026-02-14", image:"https://via.placeholder.com/60"}
+        ]));
+    }
+    if(!safeParse("liked_demo_customer_001")){
+        localStorage.setItem("liked_demo_customer_001", JSON.stringify([
+            {name:"Rose Perfume", img:"https://via.placeholder.com/150"},
+            {name:"Velvet Notebook", img:"https://via.placeholder.com/150"},
+            {name:"Ceramic Mug", img:"https://via.placeholder.com/150"}
+        ]));
+    }
+    if(!safeParse("reviews_demo_customer_001")){
+        localStorage.setItem("reviews_demo_customer_001", JSON.stringify([
+            "Loved the quality!",
+            "Fast delivery, very satisfied.",
+            "Beautiful design, will order again."
+        ]));
+    }
+}
+
+/* Load Profile */
 function loadProfile(){
-
-    let stored = localStorage.getItem("customer");
-
+    let stored = safeParse("customer");
     if(!stored){
-        const defaultCustomer = {
+        stored = {
             id:"demo_customer_001",
             name:"AaMilNa Customer",
+            phone:"",
             email:"customer@aamilna.com",
+            country:"",
+            city:"",
+            address:"",
+            easypaisa:"",
+            accountHolder:"",
             avatar:"https://via.placeholder.com/150"
         };
-        localStorage.setItem("customer", JSON.stringify(defaultCustomer));
-        stored = JSON.stringify(defaultCustomer);
+        localStorage.setItem("customer", JSON.stringify(stored));
     }
-
-    customer = JSON.parse(stored);
+    customer = stored;
+    currentAvatar = customer.avatar;
 
     document.getElementById("avatar").src = customer.avatar;
     document.getElementById("cName").textContent = customer.name;
     document.getElementById("cEmail").textContent = customer.email;
+
     document.getElementById("nameInput").value = customer.name;
+    document.getElementById("phoneInput").value = customer.phone;
     document.getElementById("emailInput").value = customer.email;
+    document.getElementById("countryInput").value = customer.country;
+    document.getElementById("cityInput").value = customer.city;
+    document.getElementById("addressInput").value = customer.address;
+    document.getElementById("easypaisaInput").value = customer.easypaisa;
+    document.getElementById("accountHolderInput").value = customer.accountHolder;
 
-    currentAvatar = customer.avatar;
+    // Profile Summary
+    const summary = document.getElementById("profileSummary");
+    summary.innerHTML = `
+        <div><span>Name:</span> ${customer.name || "-"}</div>
+        <div><span>Phone:</span> ${customer.phone || "-"}</div>
+        <div><span>Email:</span> ${customer.email || "-"}</div>
+        <div><span>Country:</span> ${customer.country || "-"}</div>
+        <div><span>City:</span> ${customer.city || "-"}</div>
+        <div><span>Address:</span> ${customer.address || "-"}</div>
+    `;
+
+    // Payments
+    const display = document.getElementById("easypaisaDisplay");
+    if(customer.easypaisa && customer.easypaisa.trim() !== ""){
+        display.textContent = `${customer.accountHolder} - ${customer.easypaisa}`;
+        display.classList.remove("emptyState");
+    } else {
+        display.textContent = "No EasyPaisa account added yet.";
+        display.classList.add("emptyState");
+    }
 }
 
-/* PROFILE MODAL */
-function openProfile(){
-    document.getElementById("profileModal").style.display="flex";
-}
+/* Modals */
+function openProfile(){ document.getElementById("profileModal").style.display="flex"; }
+function closeProfile(){ document.getElementById("profileModal").style.display="none"; }
+function openPayment(){ document.getElementById("paymentModal").style.display="flex"; }
+function closePayment(){ document.getElementById("paymentModal").style.display="none"; }
 
-function closeProfile(){
-    document.getElementById("profileModal").style.display="none";
-}
-
-/* AVATAR UPLOAD */
-document.getElementById("avatarInput").addEventListener("change",function(e){
+/* Cloudinary upload */
+document.getElementById("avatarInput").addEventListener("change", async function(e){
     const file = e.target.files[0];
     if(!file) return;
-
-    const reader = new FileReader();
-    reader.onload = function(event){
-        currentAvatar = event.target.result;
-        document.getElementById("avatar").src = currentAvatar;
-    };
-    reader.readAsDataURL(file);
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", UPLOAD_PRESET);
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {method:"POST", body:formData});
+    const data = await res.json();
+    currentAvatar = data.secure_url;
+    document.getElementById("avatar").src = currentAvatar;
 });
 
-/* SAVE PROFILE */
-function saveProfile(){
+/* Save profile */
+async function saveProfile(){
+    const name = document.getElementById("nameInput").value.trim() || "AaMilNa Customer";
+    const phone = document.getElementById("phoneInput").value.trim();
+    const email = document.getElementById("emailInput").value.trim();
+    const country = document.getElementById("countryInput").value.trim();
+    const city = document.getElementById("cityInput").value.trim();
+    const address = document.getElementById("addressInput").value.trim();
 
-    customer.name = document.getElementById("nameInput").value.trim() || "AaMilNa Customer";
-    customer.email = document.getElementById("emailInput").value.trim() || "customer@aamilna.com";
-    customer.avatar = currentAvatar;
+    const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    if(!emailValid){ alert("Please enter a valid email."); return; }
+
+    customer.name=name;
+    customer.phone=phone;
+    customer.email=email;
+    customer.country=country;
+    customer.city=city;
+    customer.address=address;
+    customer.avatar=currentAvatar;
 
     localStorage.setItem("customer", JSON.stringify(customer));
-
     loadProfile();
     closeProfile();
-    alert("Profile Saved Successfully ✅");
 }
 
-/* ORDER SYSTEM (Demo Persistent) */
-function loadOrders(){
-    const orders = JSON.parse(localStorage.getItem("orders")) || [
-        {id:"#1001",item:"Handmade Vase",date:"2026-02-10"},
-        {id:"#1002",item:"Floral Painting",date:"2026-02-12"}
-    ];
-    localStorage.setItem("orders", JSON.stringify(orders));
+/* Save payment */
+function savePayment(){
+    const easypaisa = document.getElementById("easypaisaInput").value.trim();
+    const accountHolder = document.getElementById("accountHolderInput").value.trim();
+    if(!easypaisa || !accountHolder){ alert("Please enter both account number and account holder name."); return; }
 
+    customer.easypaisa = easypaisa;
+    customer.accountHolder = accountHolder;
+    localStorage.setItem("customer", JSON.stringify(customer));
+    loadProfile();
+    closePayment();
+}
+
+/* Orders */
+function loadOrders(){
+    const orders = safeParse("orders") || [];
     const container = document.getElementById("orderList");
     container.innerHTML="";
+    if(orders.length===0){ container.innerHTML='<p class="emptyState">No orders yet.</p>'; return; }
     orders.forEach(o=>{
-        container.innerHTML+=`<div class="order"><strong>${o.id}</strong><br>${o.item}<br><small>${o.date}</small></div>`;
+        const div=document.createElement("div"); div.className="order";
+        const img=document.createElement("img"); img.src=o.image; img.alt=o.item;
+        const info=document.createElement("div");
+        info.innerHTML=`<strong>${o.id}</strong><br>${o.item}<br><small>${o.date}</small>`;
+        div.appendChild(img); div.appendChild(info); container.appendChild(div);
     });
 }
 
-/* REVIEW SYSTEM */
+/* Reviews */
 function openReview(){
-    const text = prompt("Write your review:");
-    if(!text) return;
-
-    const reviews = JSON.parse(localStorage.getItem("reviews")) || [];
+    const text = prompt("Write your review:"); if(!text) return;
+    const key = "reviews_" + customer.id;
+    const reviews = safeParse(key) || [];
     reviews.push(text);
-    localStorage.setItem("reviews", JSON.stringify(reviews));
+    localStorage.setItem(key, JSON.stringify(reviews));
     loadReviews();
 }
-
 function loadReviews(){
-    const reviews = JSON.parse(localStorage.getItem("reviews")) || [];
+    const key = "reviews_" + customer.id;
+    const reviews = safeParse(key) || [];
     const container = document.getElementById("reviewList");
     container.innerHTML="";
-    reviews.forEach(r=>{
-        container.innerHTML+=`<p>⭐ ${r}</p>`;
-    });
+    if(reviews.length===0){ container.innerHTML='<p class="emptyState">No reviews yet.</p>'; return; }
+    reviews.forEach(r=>{ const p=document.createElement("p"); p.textContent="⭐ "+r; container.appendChild(p); });
 }
 
-/* LIKED ITEMS */
+/* Liked items */
 function loadLiked(){
-    const liked = JSON.parse(localStorage.getItem("liked")) || [
-        {img:"https://via.placeholder.com/300",name:"Art Piece"}
-    ];
-    localStorage.setItem("liked", JSON.stringify(liked));
-
+    const liked = safeParse("liked_"+customer.id) || [];
     const container = document.getElementById("likedList");
     container.innerHTML="";
-    liked.forEach(l=>{
-        container.innerHTML+=`
-        <div class="likedItem">
-        <span class="heart">❤️</span>
-        <img src="${l.img}">
-        <p>${l.name}</p>
-        </div>`;
+    if(liked.length===0){ container.innerHTML='<p class="emptyState">No liked items yet.</p>'; return; }
+    liked.forEach((l,i)=>{
+        const card=document.createElement("div"); card.className="likedItem";
+        const heart=document.createElement("span"); heart.className="heart"; heart.textContent="❤️";
+        heart.onclick=()=>{ liked.splice(i,1); localStorage.setItem("liked_"+customer.id,JSON.stringify(liked)); loadLiked(); };
+        const img=document.createElement("img"); img.src=l.img; img.alt=l.name;
+        const p=document.createElement("p"); p.textContent=l.name;
+        card.appendChild(heart); card.appendChild(img); card.appendChild(p); container.appendChild(card);
     });
 }
 
-/* LOGOUT */
+/* Logout */
 function logout(){
-    alert("You are logged out. All data remains saved.");
+    sessionStorage.clear();
+    location.href="index.html";
 }
 
-/* INITIAL LOAD */
-window.onload=function(){
+/* Init */
+window.onload = function(){
+    initTestData();
     loadProfile();
     loadOrders();
     loadReviews();
     loadLiked();
 };
-
 </script>
 
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
 
 
 

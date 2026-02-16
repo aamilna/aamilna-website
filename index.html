@@ -29,7 +29,7 @@ header{
   box-shadow:0 8px 25px rgba(0,0,0,0.08);
   position:relative;
 }
-header img{height:95px;}
+header img{height:95px;cursor:pointer;}
 
 /* NAV */
 .nav{display:flex;gap:25px;align-items:center;}
@@ -37,22 +37,12 @@ header img{height:95px;}
 .nav a:hover{background:#c8928a;}
 
 /* PROFILE AVATAR */
-.profile-container{
-  cursor:pointer;
-  position:relative;
-}
+.profile-container{cursor:pointer;position:relative;}
 .profile-avatar{width:50px;height:50px;border-radius:50%;object-fit:cover;border:2px solid #d8a7a0;}
 .profile-dropdown{
-  position:absolute;
-  right:0; top:60px;
-  background:white;
-  border-radius:16px;
-  box-shadow:0 10px 25px rgba(0,0,0,0.15);
-  padding:20px;
-  width:250px;
-  display:none;
-  flex-direction:column;
-  z-index:100;
+  position:absolute; right:0; top:60px; background:white; border-radius:16px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.15); padding:20px; width:250px;
+  display:none; flex-direction:column; z-index:100;
 }
 .profile-dropdown h4{margin-bottom:6px;font-size:16px;}
 .profile-dropdown p{margin-bottom:6px;font-size:14px;color:#555;}
@@ -64,6 +54,33 @@ header img{height:95px;}
 .hero{text-align:center;padding:120px 20px;}
 .hero h1{font-family:'Playfair Display',serif;font-size:66px;font-style:italic;margin-bottom:18px;}
 .hero p{max-width:650px;margin:auto;font-size:18px;opacity:0.85;}
+
+/* STORY / ABOUT SECTION */
+.story-section{display:flex;flex-wrap:wrap;align-items:center;gap:50px;margin:80px 50px;padding:50px;background:rgba(255,230,240,0.2);border-radius:28px;box-shadow:0 15px 35px rgba(0,0,0,0.08);position:relative;}
+.story-image{flex:1;min-width:300px;position:relative;}
+.story-image img{width:100%;border-radius:28px;object-fit:cover;box-shadow:0 10px 25px rgba(0,0,0,0.12);}
+.story-text{flex:1;min-width:300px;}
+.story-text h2{font-family:'Playfair Display',serif;font-size:38px;margin-bottom:20px;}
+.story-text p{font-size:16px;line-height:1.7;margin-bottom:15px;opacity:0.9;}
+.story-buttons{margin-top:20px;display:flex;gap:20px;}
+.story-buttons a{display:inline-block;background:#d8a7a0;color:#4a3b47;text-decoration:none;padding:12px 28px;border-radius:30px;font-weight:500;transition:0.3s;}
+.story-buttons a:hover{background:#c8928a;}
+
+/* Floating story bubbles */
+.story-bubble{
+  position:absolute;
+  font-size:35px;
+  opacity:0.25;
+  animation: floatStory 28s infinite ease-in-out;
+}
+.story-bubble:nth-child(1){animation-duration:30s;}
+.story-bubble:nth-child(2){animation-duration:36s;}
+.story-bubble:nth-child(3){animation-duration:42s;}
+@keyframes floatStory{
+  0%{transform:translateY(0);}
+  50%{transform:translateY(-40px);}
+  100%{transform:translateY(0);}
+}
 
 /* SECTION */
 section{padding:80px 50px;}
@@ -80,6 +97,9 @@ section{padding:80px 50px;}
 
 /* FOOTER */
 footer{background:#eadfd4;text-align:center;padding:25px;font-size:14px;}
+
+/* RESPONSIVE */
+@media(max-width:900px){.story-section{flex-direction:column;gap:30px;}}
 </style>
 </head>
 
@@ -92,7 +112,7 @@ footer{background:#eadfd4;text-align:center;padding:25px;font-size:14px;}
 </div>
 
 <header>
-  <img src="logo.png" alt="AaMilNa Logo">
+  <img src="logo.png" alt="AaMilNa Logo" onclick="location.href='index.html'">
   <div style="display:flex; align-items:center; gap:25px;">
     <div class="nav" id="navLinks"></div>
     <div class="profile-container" id="profileContainer"></div>
@@ -101,77 +121,72 @@ footer{background:#eadfd4;text-align:center;padding:25px;font-size:14px;}
 
 <div class="hero">
   <h1>AaMilNa</h1>
-  <p>
-    Where artisans are kings and queens —  
-    a gentle platform to showcase handmade stories.
-  </p>
+  <p>Where artisans are kings and queens — a gentle platform to showcase handmade stories.</p>
+</div>
+
+<!-- STORY / ABOUT SECTION -->
+<div class="story-section">
+  <div class="story-image">
+    <img src="illustration.png" alt="Coding & Artisan Illustration">
+    
+    <!-- Floating floral overlays -->
+    <div class="story-bubble" style="top:10%; left:15%;">🌸</div>
+    <div class="story-bubble" style="top:50%; left:70%;">🌸</div>
+    <div class="story-bubble" style="top:30%; left:40%;">🌸</div>
+  </div>
+  <div class="story-text">
+    <h2>Our Story & Journey</h2>
+    <p><strong>The Vision:</strong> AaMilNa is more than a platform — it’s a gentle space where artisans’ creativity shines. Every handmade piece tells a story, and we’re here to celebrate those stories while empowering small creators.</p>
+    <p><strong>Our Journey:</strong> The spirit of entrepreneurship in me took me on a challenging voyage. As a high school student preparing for my last board exams, I’ve faced storms — balancing studies, coding, designing, developing, and building this mission alone. The journey hasn’t been easy, and I’m still tackling these challenges. But with support, guidance, and encouragement, the burden feels lighter. Every struggle is a step forward, and I hope my journey inspires others to pursue their dreams, no matter the obstacles.</p>
+    <div class="story-buttons">
+      <a href="#collectionContainer">Discover Our Mission</a>
+      <a href="shop.html">Meet the Artisans</a>
+    </div>
+  </div>
 </div>
 
 <section>
   <h2 class="section-title">Discover Collections</h2>
-  <div class="collection" id="collectionContainer">
-    <!-- Cards dynamically added -->
-  </div>
+  <div class="collection" id="collectionContainer"></div>
 </section>
 
 <footer>
-  Official email:
-  <strong>aamila.com@gmail.com</strong><br>
+  Official email: <strong>aamila.com@gmail.com</strong><br>
   © 2026 AaMilNa • Softly handmade 🤍
 </footer>
 
 <script>
-// --- NAVIGATION & PROFILE ---
+// --- USER DATA ---
+let customer = JSON.parse(localStorage.getItem("customer"));
+let artisan = JSON.parse(localStorage.getItem("artisanProfile"));
+const showAdminButton = true;
+const adminPassword = "AaMilNaSecret123";
+
+// --- NAV LINKS ---
 const nav = document.getElementById("navLinks");
-const profileContainer = document.getElementById("profileContainer");
-
-// Simulated user info
-const artisan = JSON.parse(localStorage.getItem("artisanProfile"));
-const customer = JSON.parse(localStorage.getItem("currentCustomer"));
-
-// Admin access flag (only for you)
-const showAdminButton = true; 
-const adminPassword = "AaMilNaSecret123"; // your secret password
-
-function setNavLinks(){
+function setNavLinks() {
   let links = '';
-
-  if(artisan && artisan.id){
-    links += `<a href="artisan-dashboard.html">Dashboard</a>`;
-  } else if(customer && customer.id){
-    links += `<a href="shop.html">Shop</a>`;
-  } else {
-    links += `<a href="artisan-signup.html">Artisan</a>
-              <a href="customer-login.html">Customer</a>`;
-    if(showAdminButton){
-      links += `<a href="#" id="adminBtn">Admin</a>`; // password prompt handled in JS
-    }
+  if(artisan && artisan.id) links += `<a href="artisan-dashboard.html">Dashboard</a>`;
+  else if(customer && customer.id) links += `<a href="customer-dashboard.html">Dashboard</a>`;
+  else {
+    links += `<a href="shop.html">Shop</a>
+              <a href="artisan-signup.html">Artisan</a>`;
+    if(showAdminButton) links += `<a href="#" id="adminBtn">Admin</a>`;
   }
-
   nav.innerHTML = links;
 
-  // Admin click
   const adminLink = document.getElementById('adminBtn');
   if(adminLink){
-    adminLink.addEventListener('click', ()=>{
+    adminLink.addEventListener('click', ()=> {
       const pwd = prompt("Enter Admin Password:");
-      if(pwd === adminPassword){
-        alert("Welcome Admin!");
-        window.location.href = "admin-dashboard.html";
-      } else {
-        alert("Incorrect password!");
-      }
+      if(pwd === adminPassword){ alert("Welcome Admin!"); window.location.href = "admin-dashboard.html";}
+      else alert("Incorrect password!");
     });
   }
 }
 
-// --- LOGOUT & PROFILE ---
-function logout(type){
-  if(type==='artisan') localStorage.removeItem('artisanProfile');
-  if(type==='customer') localStorage.removeItem('currentCustomer');
-  location.reload();
-}
-
+// --- PROFILE ---
+const profileContainer = document.getElementById("profileContainer");
 function setProfile(user, type){
   if(!user) return;
   profileContainer.innerHTML = `
@@ -179,7 +194,7 @@ function setProfile(user, type){
     <div class="profile-dropdown" id="profileDropdown">
       <h4>${user.name}</h4>
       <p><strong>Email:</strong> ${user.email}</p>
-      ${user.mobile ? `<p><strong>Mobile:</strong> ${user.mobile}</p>` : ''}
+      ${user.phone ? `<p><strong>Phone:</strong> ${user.phone}</p>` : ''}
       ${user.address ? `<p><strong>Address:</strong> ${user.address}</p>` : ''}
       ${type==='customer' ? '<input type="file" id="avatarUpload" accept="image/*">' : ''}
       <button id="logoutBtn">Logout</button>
@@ -190,21 +205,25 @@ function setProfile(user, type){
   const dropdown = document.getElementById('profileDropdown');
 
   avatarImg.addEventListener('click', e=>{
-    e.stopPropagation(); 
-    dropdown.style.display = dropdown.style.display==='flex' ? 'none':'flex';
+    e.stopPropagation();
+    dropdown.style.display = dropdown.style.display==='flex'?'none':'flex';
   });
-  document.getElementById('logoutBtn').addEventListener('click', ()=> logout(type));
+
+  document.getElementById('logoutBtn').addEventListener('click', ()=> {
+    if(type==='customer') localStorage.removeItem('customer');
+    else localStorage.removeItem('artisanProfile');
+    location.reload();
+  });
 
   if(type==='customer'){
-    const avatarUpload = document.getElementById('avatarUpload');
-    avatarUpload.addEventListener('change', e=>{
+    document.getElementById('avatarUpload').addEventListener('change', e=>{
       const file = e.target.files[0];
       if(file){
         const reader = new FileReader();
         reader.onload = function(ev){
           avatarImg.src = ev.target.result;
           user.avatar = ev.target.result;
-          localStorage.setItem('currentCustomer', JSON.stringify(user));
+          localStorage.setItem('customer', JSON.stringify(user));
         }
         reader.readAsDataURL(file);
       }
@@ -244,12 +263,22 @@ collections.forEach(col=>{
 
 // --- INIT ---
 setNavLinks();
-if(artisan && artisan.id) setProfile(artisan,'artisan');
 if(customer && customer.id) setProfile(customer,'customer');
+if(artisan && artisan.id) setProfile(artisan,'artisan');
 </script>
 
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
 
 
 
