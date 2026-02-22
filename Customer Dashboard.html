@@ -155,78 +155,81 @@ h1{font-family:'Playfair Display',serif;font-style:italic;font-size:46px;}
 </div>
 </div>
 
-<script>
-// Cloudinary Settings
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCHMIBHlYGqyw4U7ZZplwi4LgQxga99nLM",
+  authDomain: "aamilna.firebaseapp.com",
+  projectId: "aamilna",
+  storageBucket: "aamilna.firebasestorage.app",
+  messagingSenderId: "127180284017",
+  appId: "1:127180284017:web:b024e50670228b085f7bd0"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
 const CLOUD_NAME = "dfmpbdhrv";
 const UPLOAD_PRESET = "aamilna_unsigned";
 
 let customer = null;
 let currentAvatar = "";
 
-/* Safe parse */
-function safeParse(key){
-    try{ return JSON.parse(localStorage.getItem(key)); }
-    catch{ localStorage.removeItem(key); return null; }
-}
+const avatarImg = document.getElementById("avatar");
 
-/* Test data for soft launch */
-function initTestData(){
-    if(!safeParse("orders")){
-        localStorage.setItem("orders", JSON.stringify([
-            {id:"ORD001", item:"Handmade Vase", date:"2026-02-10", image:"https://via.placeholder.com/60"},
-            {id:"ORD002", item:"Floral Candle Set", date:"2026-02-12", image:"https://via.placeholder.com/60"},
-            {id:"ORD003", item:"Silk Scarf", date:"2026-02-14", image:"https://via.placeholder.com/60"}
-        ]));
+// 🚀 Load current customer
+onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+        window.location.href = "customer-login.html";
+        return;
     }
-    if(!safeParse("liked_demo_customer_001")){
-        localStorage.setItem("liked_demo_customer_001", JSON.stringify([
-            {name:"Rose Perfume", img:"https://via.placeholder.com/150"},
-            {name:"Velvet Notebook", img:"https://via.placeholder.com/150"},
-            {name:"Ceramic Mug", img:"https://via.placeholder.com/150"}
-        ]));
+    const docRef = doc(db, "users", user.uid);
+    const docSnap = await getDoc(docRef);
+    if(!docSnap.exists()){
+        alert("Profile not found");
+        await signOut(auth);
+        window.location.href = "customer-login.html";
+        return;
     }
-    if(!safeParse("reviews_demo_customer_001")){
-        localStorage.setItem("reviews_demo_customer_001", JSON.stringify([
-            "Loved the quality!",
-            "Fast delivery, very satisfied.",
-            "Beautiful design, will order again."
-        ]));
-    }
-}
+    customer = docSnap.data();
+    customer.id = user.uid;
+    currentAvatar = customer.avatar || "https://via.placeholder.com/150";
+    loadProfileUI();
+    loadOrders();
+    loadReviews();
+    loadLiked();
+});
 
-/* Load Profile */
-function loadProfile(){
-    let stored = safeParse("customer");
-    if(!stored){
-        stored = {
-            id:"demo_customer_001",
-            name:"AaMilNa Customer",
-            phone:"",
-            email:"customer@aamilna.com",
-            country:"",
-            city:"",
-            address:"",
-            easypaisa:"",
-            accountHolder:"",
-            avatar:"https://via.placeholder.com/150"
-        };
-        localStorage.setItem("customer", JSON.stringify(stored));
-    }
-    customer = stored;
-    currentAvatar = customer.avatar;
+// 🖼 Avatar upload
+document.getElementById("avatarInput").addEventListener("change", async function(e){
+    const file = e.target.files[0];
+    if(!file) return;
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", UPLOAD_PRESET);
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {method:"POST", body:formData});
+    const data = await res.json();
+    currentAvatar = data.secure_url;
+    avatarImg.src = currentAvatar;
+});
 
-    document.getElementById("avatar").src = customer.avatar;
+function loadProfileUI(){
+    avatarImg.src = currentAvatar;
     document.getElementById("cName").textContent = customer.name;
     document.getElementById("cEmail").textContent = customer.email;
 
     document.getElementById("nameInput").value = customer.name;
-    document.getElementById("phoneInput").value = customer.phone;
+    document.getElementById("phoneInput").value = customer.phone || "";
     document.getElementById("emailInput").value = customer.email;
-    document.getElementById("countryInput").value = customer.country;
-    document.getElementById("cityInput").value = customer.city;
-    document.getElementById("addressInput").value = customer.address;
-    document.getElementById("easypaisaInput").value = customer.easypaisa;
-    document.getElementById("accountHolderInput").value = customer.accountHolder;
+    document.getElementById("countryInput").value = customer.country || "";
+    document.getElementById("cityInput").value = customer.city || "";
+    document.getElementById("addressInput").value = customer.address || "";
+    document.getElementById("easypaisaInput").value = customer.easypaisa || "";
+    document.getElementById("accountHolderInput").value = customer.accountHolder || "";
 
     // Profile Summary
     const summary = document.getElementById("profileSummary");
@@ -239,7 +242,6 @@ function loadProfile(){
         <div><span>Address:</span> ${customer.address || "-"}</div>
     `;
 
-    // Payments
     const display = document.getElementById("easypaisaDisplay");
     if(customer.easypaisa && customer.easypaisa.trim() !== ""){
         display.textContent = `${customer.accountHolder} - ${customer.easypaisa}`;
@@ -250,126 +252,57 @@ function loadProfile(){
     }
 }
 
-/* Modals */
-function openProfile(){ document.getElementById("profileModal").style.display="flex"; }
-function closeProfile(){ document.getElementById("profileModal").style.display="none"; }
-function openPayment(){ document.getElementById("paymentModal").style.display="flex"; }
-function closePayment(){ document.getElementById("paymentModal").style.display="none"; }
-
-/* Cloudinary upload */
-document.getElementById("avatarInput").addEventListener("change", async function(e){
-    const file = e.target.files[0];
-    if(!file) return;
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", UPLOAD_PRESET);
-    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {method:"POST", body:formData});
-    const data = await res.json();
-    currentAvatar = data.secure_url;
-    document.getElementById("avatar").src = currentAvatar;
-});
-
-/* Save profile */
+// Save profile
 async function saveProfile(){
-    const name = document.getElementById("nameInput").value.trim() || "AaMilNa Customer";
+    const name = document.getElementById("nameInput").value.trim();
     const phone = document.getElementById("phoneInput").value.trim();
     const email = document.getElementById("emailInput").value.trim();
     const country = document.getElementById("countryInput").value.trim();
     const city = document.getElementById("cityInput").value.trim();
     const address = document.getElementById("addressInput").value.trim();
 
-    const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    if(!emailValid){ alert("Please enter a valid email."); return; }
+    if(!name || !email){
+        alert("Name and email required");
+        return;
+    }
 
-    customer.name=name;
-    customer.phone=phone;
-    customer.email=email;
-    customer.country=country;
-    customer.city=city;
-    customer.address=address;
-    customer.avatar=currentAvatar;
-
-    localStorage.setItem("customer", JSON.stringify(customer));
-    loadProfile();
+    const docRef = doc(db, "users", customer.id);
+    await updateDoc(docRef, {
+        name, phone, email, country, city, address, avatar: currentAvatar
+    });
+    customer = {...customer, name, phone, email, country, city, address, avatar: currentAvatar};
+    loadProfileUI();
     closeProfile();
 }
 
-/* Save payment */
-function savePayment(){
+async function savePayment(){
     const easypaisa = document.getElementById("easypaisaInput").value.trim();
     const accountHolder = document.getElementById("accountHolderInput").value.trim();
-    if(!easypaisa || !accountHolder){ alert("Please enter both account number and account holder name."); return; }
-
+    if(!easypaisa || !accountHolder){ alert("Both required"); return; }
+    const docRef = doc(db, "users", customer.id);
+    await updateDoc(docRef, {easypaisa, accountHolder});
     customer.easypaisa = easypaisa;
     customer.accountHolder = accountHolder;
-    localStorage.setItem("customer", JSON.stringify(customer));
-    loadProfile();
+    loadProfileUI();
     closePayment();
 }
 
-/* Orders */
-function loadOrders(){
-    const orders = safeParse("orders") || [];
-    const container = document.getElementById("orderList");
-    container.innerHTML="";
-    if(orders.length===0){ container.innerHTML='<p class="emptyState">No orders yet.</p>'; return; }
-    orders.forEach(o=>{
-        const div=document.createElement("div"); div.className="order";
-        const img=document.createElement("img"); img.src=o.image; img.alt=o.item;
-        const info=document.createElement("div");
-        info.innerHTML=`<strong>${o.id}</strong><br>${o.item}<br><small>${o.date}</small>`;
-        div.appendChild(img); div.appendChild(info); container.appendChild(div);
-    });
-}
+// Modals
+function openProfile(){ document.getElementById("profileModal").style.display="flex"; }
+function closeProfile(){ document.getElementById("profileModal").style.display="none"; }
+function openPayment(){ document.getElementById("paymentModal").style.display="flex"; }
+function closePayment(){ document.getElementById("paymentModal").style.display="none"; }
 
-/* Reviews */
-function openReview(){
-    const text = prompt("Write your review:"); if(!text) return;
-    const key = "reviews_" + customer.id;
-    const reviews = safeParse(key) || [];
-    reviews.push(text);
-    localStorage.setItem(key, JSON.stringify(reviews));
-    loadReviews();
-}
-function loadReviews(){
-    const key = "reviews_" + customer.id;
-    const reviews = safeParse(key) || [];
-    const container = document.getElementById("reviewList");
-    container.innerHTML="";
-    if(reviews.length===0){ container.innerHTML='<p class="emptyState">No reviews yet.</p>'; return; }
-    reviews.forEach(r=>{ const p=document.createElement("p"); p.textContent="⭐ "+r; container.appendChild(p); });
-}
+// Dummy sections for orders/reviews/liked — fetch from Firestore in real implementation
+function loadOrders(){ /* fetch from Firestore orders collection if available */ }
+function loadReviews(){ /* fetch from Firestore reviews collection if available */ }
+function loadLiked(){ /* fetch from Firestore liked items if available */ }
 
-/* Liked items */
-function loadLiked(){
-    const liked = safeParse("liked_"+customer.id) || [];
-    const container = document.getElementById("likedList");
-    container.innerHTML="";
-    if(liked.length===0){ container.innerHTML='<p class="emptyState">No liked items yet.</p>'; return; }
-    liked.forEach((l,i)=>{
-        const card=document.createElement("div"); card.className="likedItem";
-        const heart=document.createElement("span"); heart.className="heart"; heart.textContent="❤️";
-        heart.onclick=()=>{ liked.splice(i,1); localStorage.setItem("liked_"+customer.id,JSON.stringify(liked)); loadLiked(); };
-        const img=document.createElement("img"); img.src=l.img; img.alt=l.name;
-        const p=document.createElement("p"); p.textContent=l.name;
-        card.appendChild(heart); card.appendChild(img); card.appendChild(p); container.appendChild(card);
-    });
-}
-
-/* Logout */
+// Logout
 function logout(){
-    sessionStorage.clear();
-    location.href="index.html";
+    signOut(auth).then(()=>{ window.location.href="customer-login.html"; });
 }
 
-/* Init */
-window.onload = function(){
-    initTestData();
-    loadProfile();
-    loadOrders();
-    loadReviews();
-    loadLiked();
-};
 </script>
 
 </body>

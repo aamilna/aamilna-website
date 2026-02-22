@@ -97,12 +97,30 @@ Already have an account? <a href="customer-login.html">Login</a><br><br>
 
 </div>
 
-<script>
+<!-- 🔥 FIREBASE INTEGRATION -->
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCHMIBHlYGqyw4U7ZZplwi4LgQxga99nLM",
+  authDomain: "aamilna.firebaseapp.com",
+  projectId: "aamilna",
+  storageBucket: "aamilna.firebasestorage.app",
+  messagingSenderId: "127180284017",
+  appId: "1:127180284017:web:b024e50670228b085f7bd0"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
 const form = document.getElementById("customerSignupForm");
 const successBox = document.getElementById("successBox");
 
-form.addEventListener("submit", function(e){
+form.addEventListener("submit", async function(e){
 e.preventDefault();
 
 const name = document.getElementById("name").value.trim();
@@ -127,50 +145,46 @@ alert("Address and Confirm Address do not match.");
 return;
 }
 
-let customers = JSON.parse(localStorage.getItem("customers")) || [];
+try {
 
-if(customers.some(c => c.email === email)){
-alert("Email already registered. Please login.");
-return;
+  // 🔐 Create Auth Account
+  const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+  const user = userCredential.user;
+
+  // 🗄 Create Firestore Profile
+  await setDoc(doc(db, "users", user.uid), {
+    role: "customer",
+    name: name,
+    email: email,
+    mobile: mobile,
+    address: address,
+    avatar: "https://via.placeholder.com/150",
+    createdAt: serverTimestamp(),
+    orders: [],
+    reviews: [],
+    likedProducts: [],
+    wallet: {
+      totalSpent: 0,
+      pendingPayments: 0
+    }
+  });
+
+  form.style.display = "none";
+  successBox.style.display = "block";
+
+} catch(error) {
+
+  if(error.code === "auth/email-already-in-use"){
+    alert("Email already registered. Please login.");
+  } else if(error.code === "auth/weak-password"){
+    alert("Password should be at least 6 characters.");
+  } else {
+    alert("Something went wrong. Please try again.");
+  }
+
 }
-
-/* CREATE FULL CUSTOMER PROFILE STRUCTURE */
-
-const newCustomer = {
-id: "cust_" + Date.now(),
-name,
-email,
-password,
-mobile,
-address,
-avatar: "https://via.placeholder.com/150",
-createdAt: new Date().toISOString(),
-orders: [],
-reviews: [],
-likedProducts: [],
-wallet: {
-totalSpent: 0,
-pendingPayments: 0
-}
-};
-
-/* SAVE CUSTOMER */
-
-customers.push(newCustomer);
-localStorage.setItem("customers", JSON.stringify(customers));
-
-/* SET LOGIN SESSION */
-
-localStorage.setItem("currentCustomerId", newCustomer.id);
-
-/* SHOW SUCCESS PANEL */
-
-form.style.display = "none";
-successBox.style.display = "block";
 
 });
-
-/* REDIRECT TO DASHBOARD */
 
 function goToDashboard(){
 window.location.href = "customer-dashboard.html";
@@ -180,4 +194,5 @@ window.location.href = "customer-dashboard.html";
 
 </body>
 </html>
+
 

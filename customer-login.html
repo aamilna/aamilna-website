@@ -3,168 +3,39 @@
 <head>
 <meta charset="UTF-8">
 <title>Customer Login | AaMilNa</title>
-
-<!-- SAME FONTS AS HOME -->
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;1,600&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
-
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-}
-
-body{
-  font-family:'Poppins',sans-serif;
-  background:#fff7f0;
-  color:#4a3b47;
-  min-height:100vh;
-}
-
-/* BACKGROUND — SAME STYLE */
-.bubble-bg{
-  position:fixed;
-  inset:0;
-  z-index:-1;
-  overflow:hidden;
-}
-.bubble{
-  position:absolute;
-  width:260px;
-  height:260px;
-  border-radius:50%;
-  background:
-    radial-gradient(circle at top left,
-      rgba(255,255,255,0.9),
-      rgba(255,220,230,0.45),
-      rgba(200,150,170,0.25)
-    );
-  backdrop-filter: blur(6px);
-  animation: float 30s infinite ease-in-out;
-}
-.bubble::after{
-  content:"🌸";
-  position:absolute;
-  inset:0;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  font-size:70px;
-  opacity:0.35;
-}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Poppins',sans-serif;background:#fff7f0;color:#4a3b47;min-height:100vh;}
+.bubble-bg{position:fixed;inset:0;z-index:-1;overflow:hidden;}
+.bubble{position:absolute;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle at top left,rgba(255,255,255,0.9),rgba(255,220,230,0.45),rgba(200,150,170,0.25));backdrop-filter: blur(6px);animation: float 30s infinite ease-in-out;}
+.bubble::after{content:"🌸";position:absolute;inset:0;display:flex;justify-content:center;align-items:center;font-size:70px;opacity:0.35;}
 .bubble:nth-child(1){top:12%;left:8%;}
 .bubble:nth-child(2){top:60%;left:70%;animation-duration:36s;}
+@keyframes float{0%{transform:translateY(0);}50%{transform:translateY(-50px);}100%{transform:translateY(0);}}
 
-@keyframes float{
-  0%{transform:translateY(0);}
-  50%{transform:translateY(-50px);}
-  100%{transform:translateY(0);}
-}
-
-/* CENTER CARD */
-.login-wrapper{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  min-height:100vh;
-  padding:40px 20px;
-}
-
-.login-card{
-  background:rgba(255,255,255,0.95);
-  width:100%;
-  max-width:420px;
-  padding:45px 40px;
-  border-radius:30px;
-  box-shadow:0 25px 50px rgba(0,0,0,0.15);
-}
-
-/* HEADINGS */
-.login-card h1{
-  font-family:'Playfair Display',serif;
-  font-style:italic;
-  font-size:40px;
-  text-align:center;
-  margin-bottom:10px;
-}
-
-.login-card p{
-  text-align:center;
-  font-size:14px;
-  opacity:0.8;
-  margin-bottom:35px;
-}
-
-/* INPUTS */
-.form-group{
-  margin-bottom:22px;
-}
-
-label{
-  font-size:14px;
-  font-weight:500;
-  display:block;
-  margin-bottom:6px;
-}
-
-input{
-  width:100%;
-  padding:13px 16px;
-  border-radius:25px;
-  border:1px solid #d8a7a0;
-  font-family:'Poppins',sans-serif;
-  font-size:14px;
-  outline:none;
-}
-
-input:focus{
-  border-color:#c8928a;
-}
-
-/* BUTTON */
-button{
-  width:100%;
-  margin-top:10px;
-  padding:14px;
-  border:none;
-  border-radius:30px;
-  background:#d8a7a0;
-  color:#4a3b47;
-  font-family:'Poppins',sans-serif;
-  font-size:15px;
-  font-weight:500;
-  cursor:pointer;
-  transition:0.3s;
-}
-
-button:hover{
-  background:#c8928a;
-}
-
-/* FOOT LINKS */
-.footer-links{
-  margin-top:25px;
-  text-align:center;
-  font-size:13px;
-}
-
-.footer-links a{
-  text-decoration:none;
-  color:#4a3b47;
-  font-weight:500;
-}
+/* LOGIN CARD */
+.login-wrapper{display:flex;justify-content:center;align-items:center;min-height:100vh;padding:40px 20px;}
+.login-card{background:rgba(255,255,255,0.95);width:100%;max-width:420px;padding:45px 40px;border-radius:30px;box-shadow:0 25px 50px rgba(0,0,0,0.15);}
+.login-card h1{font-family:'Playfair Display',serif;font-style:italic;font-size:40px;text-align:center;margin-bottom:10px;}
+.login-card p{text-align:center;font-size:14px;opacity:0.8;margin-bottom:35px;}
+.form-group{margin-bottom:22px;}
+label{font-size:14px;font-weight:500;display:block;margin-bottom:6px;}
+input{width:100%;padding:13px 16px;border-radius:25px;border:1px solid #d8a7a0;font-family:'Poppins',sans-serif;font-size:14px;outline:none;}
+input:focus{border-color:#c8928a;}
+button{width:100%;margin-top:10px;padding:14px;border:none;border-radius:30px;background:#d8a7a0;color:#4a3b47;font-family:'Poppins',sans-serif;font-size:15px;font-weight:500;cursor:pointer;transition:0.3s;}
+button:hover{background:#c8928a;}
+.footer-links{margin-top:25px;text-align:center;font-size:13px;}
+.footer-links a{text-decoration:none;color:#4a3b47;font-weight:500;}
 </style>
 </head>
-
 <body>
 
-<!-- BACKGROUND -->
 <div class="bubble-bg">
   <div class="bubble"></div>
   <div class="bubble"></div>
 </div>
 
-<!-- LOGIN -->
 <div class="login-wrapper">
   <div class="login-card">
     <h1>Customer</h1>
@@ -185,47 +56,86 @@ button:hover{
     </form>
 
     <div class="footer-links">
-      New here?
-      <a href="customer-signup.html">Create an account</a>
+      New here? <a href="customer-signup.html">Create an account</a>
     </div>
   </div>
 </div>
 
-<!-- 🔥 FIREBASE LOGIN (NO DESIGN CHANGES) -->
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyCHMIBHlYGqyw4U7ZZplwi4LgQxga99nLM",
-    authDomain: "aamilna.firebaseapp.com",
-    projectId: "aamilna",
-    storageBucket: "aamilna.firebasestorage.app",
-    messagingSenderId: "127180284017",
-    appId: "1:127180284017:web:b024e50670228b085f7bd0"
-  };
+// Firebase config
+const firebaseConfig = {
+  apiKey: "AIzaSyCHMIBHlYGqyw4U7ZZplwi4LgQxga99nLM",
+  authDomain: "aamilna.firebaseapp.com",
+  projectId: "aamilna",
+  storageBucket: "aamilna.firebasestorage.app",
+  messagingSenderId: "127180284017",
+  appId: "1:127180284017:web:b024e50670228b085f7bd0"
+};
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-  document.getElementById("customerLoginForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
+// --- LOGIN FORM ---
+document.getElementById("customerLoginForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
 
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value;
+  try {
+    // Login
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
 
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      alert("Login successful 🤍");
-      window.location.href = "index.html";
-    } catch (error) {
-      alert("Invalid email or password");
+    // Fetch Firestore profile
+    try{
+      const profileRef = doc(db, "customers", user.uid);
+      const profileSnap = await getDoc(profileRef);
+      if(profileSnap.exists()){
+        const profile = profileSnap.data();
+        sessionStorage.setItem("currentCustomer", JSON.stringify(profile));
+      }
+    } catch(err){
+      console.warn("Firestore read failed but login continues:", err);
     }
-  });
+
+    alert("Login successful 🤍");
+    window.location.href = "index.html";
+
+  } catch(err) {
+    console.error(err);
+    switch(err.code){
+      case "auth/invalid-email":
+        alert("Email is invalid.");
+        break;
+      case "auth/user-disabled":
+        alert("This user account is disabled.");
+        break;
+      case "auth/user-not-found":
+      case "auth/wrong-password":
+        alert("Invalid email or password.");
+        break;
+      default:
+        alert("Login failed. Please check your connection and try again.");
+    }
+  }
+});
 </script>
 
 </body>
 </html>
+
+
+
+
+
+
+
 
 
 

@@ -10,266 +10,270 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Poppins',sans-serif;background:#fff7f0;color:#4a3b47;overflow-x:hidden;}
 
-/* 🌸 FLORAL BACKGROUND */
 .bubble-bg{position:fixed;inset:0;z-index:-1;overflow:hidden;}
-.bubble{position:absolute;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle at top left,rgba(255,255,255,0.9),rgba(255,220,230,0.45),rgba(200,150,170,0.25));backdrop-filter: blur(6px);animation: float 30s infinite ease-in-out;}
+.bubble{position:absolute;width:260px;height:260px;border-radius:50%;
+background:radial-gradient(circle at top left,rgba(255,255,255,0.9),rgba(255,220,230,0.45),rgba(200,150,170,0.25));
+backdrop-filter: blur(6px);animation: float 30s infinite ease-in-out;}
 .bubble::after{content:"🌸";position:absolute;inset:0;display:flex;justify-content:center;align-items:center;font-size:70px;opacity:0.35;}
 .bubble:nth-child(1){top:8%;left:6%;}
 .bubble:nth-child(2){top:55%;left:70%;animation-duration:36s;}
 .bubble:nth-child(3){top:28%;left:40%;animation-duration:42s;}
 @keyframes float{0%{transform:translateY(0);}50%{transform:translateY(-60px);}100%{transform:translateY(0);}}
 
-/* HEADER */
-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:22px 50px;
-  background:rgba(255,255,255,0.85);
-  box-shadow:0 8px 25px rgba(0,0,0,0.08);
-  position:relative;
-}
+header{display:flex;justify-content:space-between;align-items:center;padding:22px 50px;background:rgba(255,255,255,0.85);box-shadow:0 8px 25px rgba(0,0,0,0.08);}
 header img{height:95px;cursor:pointer;}
 
-/* NAV */
 .nav{display:flex;gap:25px;align-items:center;}
 .nav a{text-decoration:none;font-size:14px;font-weight:500;color:#4a3b47;padding:10px 22px;border-radius:30px;background:#d8a7a0;transition:0.3s;}
 .nav a:hover{background:#c8928a;}
 
-/* PROFILE AVATAR */
 .profile-container{cursor:pointer;position:relative;}
 .profile-avatar{width:50px;height:50px;border-radius:50%;object-fit:cover;border:2px solid #d8a7a0;}
-.profile-dropdown{
-  position:absolute; right:0; top:60px; background:white; border-radius:16px;
-  box-shadow:0 10px 25px rgba(0,0,0,0.15); padding:20px; width:250px;
-  display:none; flex-direction:column; z-index:100;
-}
+.profile-dropdown{position:absolute;right:0;top:60px;background:white;border-radius:16px;box-shadow:0 10px 25px rgba(0,0,0,0.15);padding:20px;width:260px;display:none;flex-direction:column;z-index:100;}
 .profile-dropdown h4{margin-bottom:6px;font-size:16px;}
 .profile-dropdown p{margin-bottom:6px;font-size:14px;color:#555;}
 .profile-dropdown button{margin-top:10px;background:#d8a7a0;border:none;padding:10px;border-radius:20px;cursor:pointer;width:100%;font-weight:500;}
 .profile-dropdown button:hover{background:#c8928a;}
-.profile-dropdown input[type="file"]{margin-top:10px;}
+.profile-dropdown input{margin-top:8px;font-size:13px;}
 
-/* HERO */
 .hero{text-align:center;padding:120px 20px;}
 .hero h1{font-family:'Playfair Display',serif;font-size:66px;font-style:italic;margin-bottom:18px;}
 .hero p{max-width:650px;margin:auto;font-size:18px;opacity:0.85;}
 
-/* STORY / ABOUT SECTION */
-.story-section{display:flex;flex-wrap:wrap;align-items:center;gap:50px;margin:80px 50px;padding:50px;background:rgba(255,230,240,0.2);border-radius:28px;box-shadow:0 15px 35px rgba(0,0,0,0.08);position:relative;}
-.story-image{flex:1;min-width:300px;position:relative;}
-.story-image img{width:100%;border-radius:28px;object-fit:cover;box-shadow:0 10px 25px rgba(0,0,0,0.12);}
-.story-text{flex:1;min-width:300px;}
-.story-text h2{font-family:'Playfair Display',serif;font-size:38px;margin-bottom:20px;}
-.story-text p{font-size:16px;line-height:1.7;margin-bottom:15px;opacity:0.9;}
-.story-buttons{margin-top:20px;display:flex;gap:20px;}
-.story-buttons a{display:inline-block;background:#d8a7a0;color:#4a3b47;text-decoration:none;padding:12px 28px;border-radius:30px;font-weight:500;transition:0.3s;}
-.story-buttons a:hover{background:#c8928a;}
-
-/* Floating story bubbles */
-.story-bubble{
-  position:absolute;
-  font-size:35px;
-  opacity:0.25;
-  animation: floatStory 28s infinite ease-in-out;
-}
-.story-bubble:nth-child(1){animation-duration:30s;}
-.story-bubble:nth-child(2){animation-duration:36s;}
-.story-bubble:nth-child(3){animation-duration:42s;}
-@keyframes floatStory{
-  0%{transform:translateY(0);}
-  50%{transform:translateY(-40px);}
-  100%{transform:translateY(0);}
-}
-
-/* SECTION */
 section{padding:80px 50px;}
 .section-title{text-align:center;font-family:'Playfair Display',serif;font-size:40px;margin-bottom:50px;}
 
-/* COLLECTION */
 .collection{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:35px;}
-.card{background:rgba(255,255,255,0.95);border-radius:28px;padding:25px;box-shadow:0 20px 40px rgba(0,0,0,0.12);text-align:center;transition:0.4s;cursor:pointer;}
+.card{background:rgba(255,255,255,0.95);border-radius:28px;padding:25px;box-shadow:0 20px 40px rgba(0,0,0,0.12);text-align:center;transition:0.4s;}
 .card:hover{transform:translateY(-10px) scale(1.03);}
 .card img{width:100%;height:230px;object-fit:cover;border-radius:20px;margin-bottom:18px;}
 .card h3{margin-bottom:15px;}
 .card a{display:inline-block;background:#d8a7a0;color:#4a3b47;text-decoration:none;padding:12px 30px;border-radius:30px;font-weight:500;transition:0.3s;}
 .card a:hover{background:#c8928a;}
 
-/* FOOTER */
 footer{background:#eadfd4;text-align:center;padding:25px;font-size:14px;}
-
-/* RESPONSIVE */
-@media(max-width:900px){.story-section{flex-direction:column;gap:30px;}}
-
 </style>
 </head>
 
 <body>
 
 <div class="bubble-bg">
-  <div class="bubble"></div>
-  <div class="bubble"></div>
-  <div class="bubble"></div>
+<div class="bubble"></div>
+<div class="bubble"></div>
+<div class="bubble"></div>
 </div>
 
 <header>
-  <img src="logo.png" alt="AaMilNa Logo" onclick="location.href='index.html'">
-  <div style="display:flex; align-items:center; gap:25px;">
-    <div class="nav" id="navLinks"></div>
-    <div class="profile-container" id="profileContainer"></div>
-  </div>
+<img src="logo.png" onclick="location.href='index.html'">
+<div style="display:flex; align-items:center; gap:25px;">
+<div class="nav" id="navLinks"></div>
+<div class="profile-container" id="profileContainer"></div>
+</div>
 </header>
 
 <div class="hero">
-  <h1>AaMilNa</h1>
-  <p>Where artisans are kings and queens — a gentle platform to showcase handmade stories.</p>
-</div>
-
-<!-- STORY / ABOUT SECTION -->
-<div class="story-section">
-  <div class="story-image">
-    <img src="illustration.png" alt="Coding & Artisan Illustration">
-    
-    <!-- Floating floral overlays -->
-    <div class="story-bubble" style="top:10%; left:15%;">🌸</div>
-    <div class="story-bubble" style="top:50%; left:70%;">🌸</div>
-    <div class="story-bubble" style="top:30%; left:40%;">🌸</div>
-  </div>
-  <div class="story-text">
-    <h2>Our Story & Journey</h2>
-    <p><strong>The Vision:</strong> AaMilNa is more than a platform — it’s a gentle space where artisans’ creativity shines. Every handmade piece tells a story, and we’re here to celebrate those stories while empowering small creators.</p>
-    <p><strong>Our Journey:</strong> The spirit of entrepreneurship in me took me on a challenging voyage. As a high school student preparing for my last board exams, I’ve faced storms — balancing studies, coding, designing, developing, and building this mission alone. The journey hasn’t been easy, and I’m still tackling these challenges. But with support, guidance, and encouragement, the burden feels lighter. Every struggle is a step forward, and I hope my journey inspires others to pursue their dreams, no matter the obstacles.</p>
-    <div class="story-buttons">
-      <a href="#collectionContainer">Discover Our Mission</a>
-      <a href="shop.html">Meet the Artisans</a>
-    </div>
-  </div>
+<h1>AaMilNa</h1>
+<p>Where artisans are kings and queens — a gentle platform to showcase handmade stories.</p>
 </div>
 
 <section>
-  <h2 class="section-title">Discover Collections</h2>
-  <div class="collection" id="collectionContainer"></div>
+<h2 class="section-title">Discover Collections</h2>
+<div class="collection" id="collectionContainer"></div>
 </section>
 
 <footer>
-  Official email: <strong>aamila.com@gmail.com</strong><br>
-  © 2026 AaMilNa • Softly handmade 🤍
+Official email: <strong>aamila.com@gmail.com</strong><br>
+© 2026 AaMilNa • Softly handmade 🤍
 </footer>
 
-<script>
-// --- USER DATA ---
-let customer = JSON.parse(localStorage.getItem("customer"));
-let artisan = JSON.parse(localStorage.getItem("artisanProfile"));
-const showAdminButton = true;
-const adminPassword = "AaMilNaSecret123";
+<script type="module">
 
-// --- NAV LINKS ---
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+
+const firebaseConfig = {
+apiKey: "YOUR_API_KEY",
+authDomain: "YOUR_AUTH_DOMAIN",
+projectId: "YOUR_PROJECT_ID",
+storageBucket: "YOUR_STORAGE_BUCKET",
+messagingSenderId: "YOUR_ID",
+appId: "YOUR_APP_ID"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const storage = getStorage(app);
+
 const nav = document.getElementById("navLinks");
-function setNavLinks() {
-  let links = '';
-  if(artisan && artisan.id) links += `<a href="artisan-dashboard.html">Dashboard</a>`;
-  else if(customer && customer.id) links += `<a href="customer-dashboard.html">Dashboard</a>`;
-  else {
-    links += `<a href="customer-login.html">Customer</a>
-              <a href="artisan-signup.html">Artisan</a>`;
-    if(showAdminButton) links += `<a href="#" id="adminBtn">Admin</a>`;
-  }
-  nav.innerHTML = links;
-
-  const adminLink = document.getElementById('adminBtn');
-  if(adminLink){
-    adminLink.addEventListener('click', ()=> {
-      const pwd = prompt("Enter Admin Password:");
-      if(pwd === adminPassword){ alert("Welcome Admin!"); window.location.href = "admin-dashboard.html";}
-      else alert("Incorrect password!");
-    });
-  }
-}
-
-// --- PROFILE ---
 const profileContainer = document.getElementById("profileContainer");
-function setProfile(user, type){
-  if(!user) return;
-  profileContainer.innerHTML = `
-    <img src="${user.avatar || 'https://via.placeholder.com/150'}" class="profile-avatar" id="profileAvatar">
-    <div class="profile-dropdown" id="profileDropdown">
-      <h4>${user.name}</h4>
-      <p><strong>Email:</strong> ${user.email}</p>
-      ${user.phone ? `<p><strong>Phone:</strong> ${user.phone}</p>` : ''}
-      ${user.address ? `<p><strong>Address:</strong> ${user.address}</p>` : ''}
-      ${type==='customer' ? '<input type="file" id="avatarUpload" accept="image/*">' : ''}
-      <button id="logoutBtn">Logout</button>
-    </div>
-  `;
 
-  const avatarImg = document.getElementById('profileAvatar');
-  const dropdown = document.getElementById('profileDropdown');
-
-  avatarImg.addEventListener('click', e=>{
-    e.stopPropagation();
-    dropdown.style.display = dropdown.style.display==='flex'?'none':'flex';
-  });
-
-  document.getElementById('logoutBtn').addEventListener('click', ()=> {
-    if(type==='customer') localStorage.removeItem('customer');
-    else localStorage.removeItem('artisanProfile');
-    location.reload();
-  });
-
-  if(type==='customer'){
-    document.getElementById('avatarUpload').addEventListener('change', e=>{
-      const file = e.target.files[0];
-      if(file){
-        const reader = new FileReader();
-        reader.onload = function(ev){
-          avatarImg.src = ev.target.result;
-          user.avatar = ev.target.result;
-          localStorage.setItem('customer', JSON.stringify(user));
-        }
-        reader.readAsDataURL(file);
-      }
-    });
-  }
-
-  document.addEventListener('click', e=>{
-    if(!profileContainer.contains(e.target)) dropdown.style.display='none';
-  });
+function safeLogout(e){
+if(e) e.preventDefault();
+signOut(auth).catch(err=>console.error(err));
 }
 
-// --- COLLECTION CARDS ---
-const collections = [
-  {name:'Embroidered Tote Bags', img:'tote.jpg'},
-  {name:'Crochet Collection', img:'crochet.jpg'},
-  {name:'Handmade Jewelry', img:'jewelry.jpg'},
-  {name:'Artisan Stationery', img:'stationery.jpg'},
-  {name:'Textile Arts', img:'textile.jpg'},
-  {name:'Art & Illustration', img:'art.jpg'},
-  {name:'Home & Decor', img:'decor.jpg'},
-  {name:'Edible Art', img:'edible.jpg'},
-  {name:'Self-Care & Wellness', img:'selfcare.jpg'},
-  {name:'Custom & Personalized', img:'custom.jpg'}
-];
+onAuthStateChanged(auth, async (user) => {
 
-const collectionContainer = document.getElementById('collectionContainer');
-collections.forEach(col=>{
-  const card = document.createElement('div');
-  card.className='card';
-  card.innerHTML = `
-    <img src="${col.img}" alt="${col.name}">
-    <h3>${col.name}</h3>
-    <a href="shop.html">Discover</a>
-  `;
-  collectionContainer.appendChild(card);
+if(!user){
+renderGuestNav();
+profileContainer.innerHTML="";
+return;
+}
+
+try{
+
+const userRef = doc(db,"users",user.uid);
+let snap = await getDoc(userRef);
+
+if(!snap.exists()){
+await setDoc(userRef,{
+email:user.email || "",
+name:(user.email || "User").split("@")[0],
+role:"customer",
+avatar:""
+});
+snap = await getDoc(userRef);
+}
+
+const data = snap.data();
+
+if(data.role==="customer") renderCustomerNav();
+else if(data.role==="artisan") renderArtisanNav();
+else if(data.role==="admin") renderAdminNav();
+else renderGuestNav();
+
+renderProfile(user,data);
+
+}catch(err){
+console.error("Auth error:",err);
+renderGuestNav();
+}
+
 });
 
-// --- INIT ---
-setNavLinks();
-if(customer && customer.id) setProfile(customer,'customer');
-if(artisan && artisan.id) setProfile(artisan,'artisan');
+function renderGuestNav(){
+nav.innerHTML=`
+<a href="customer-login.html">Customer</a>
+<a href="artisan-signup.html">Artisan</a>
+<a href="admin-login.html">Admin</a>
+`;
+}
+
+function renderCustomerNav(){
+nav.innerHTML=`
+<a href="customer-dashboard.html">Customer Dashboard</a>
+<a href="shop.html">Shop</a>
+<a href="#" id="logoutNav">Logout</a>
+`;
+document.getElementById("logoutNav").addEventListener("click",safeLogout);
+}
+
+function renderArtisanNav(){
+nav.innerHTML=`
+<a href="artisan-dashboard.html">Artisan Dashboard</a>
+<a href="shop.html">Shop</a>
+<a href="#" id="logoutNav">Logout</a>
+`;
+document.getElementById("logoutNav").addEventListener("click",safeLogout);
+}
+
+function renderAdminNav(){
+nav.innerHTML=`
+<a href="admin.html">Admin Panel</a>
+<a href="shop.html">Shop</a>
+<a href="#" id="logoutNav">Logout</a>
+`;
+document.getElementById("logoutNav").addEventListener("click",safeLogout);
+}
+
+function renderProfile(user,data){
+
+profileContainer.innerHTML=`
+<img src="${data.avatar || 'https://i.imgur.com/UPVxPjb.png'}" class="profile-avatar" id="avatar">
+<div class="profile-dropdown" id="dropdown">
+<h4>${data.name}</h4>
+<p>${user.email}</p>
+<input type="file" id="photoUpload" accept="image/*">
+<button id="logoutBtn">Logout</button>
+</div>
+`;
+
+const avatar=document.getElementById("avatar");
+const dropdown=document.getElementById("dropdown");
+
+avatar.addEventListener("click",(e)=>{
+e.stopPropagation();
+dropdown.style.display=dropdown.style.display==="flex"?"none":"flex";
+});
+
+dropdown.addEventListener("click",(e)=>e.stopPropagation());
+
+document.addEventListener("click",()=>dropdown.style.display="none");
+
+document.getElementById("logoutBtn").addEventListener("click",safeLogout);
+
+document.getElementById("photoUpload").addEventListener("change",async function(){
+const file=this.files[0];
+if(!file) return;
+
+try{
+const storageRef=ref(storage,"avatars/"+user.uid);
+await uploadBytes(storageRef,file);
+const url=await getDownloadURL(storageRef);
+await updateDoc(doc(db,"users",user.uid),{avatar:url});
+avatar.src=url;
+}catch(err){
+console.error("Upload error:",err);
+}
+});
+
+}
+
+const collections=[
+{name:'Embroidered Tote Bags',img:'tote.jpg'},
+{name:'Crochet Collection',img:'crochet.jpg'},
+{name:'Handmade Jewelry',img:'jewelry.jpg'},
+{name:'Artisan Stationery',img:'stationery.jpg'},
+{name:'Textile Arts',img:'textile.jpg'},
+{name:'Art & Illustration',img:'art.jpg'},
+{name:'Home & Decor',img:'decor.jpg'},
+{name:'Edible Art',img:'edible.jpg'},
+{name:'Self-Care & Wellness',img:'selfcare.jpg'},
+{name:'Custom & Personalized',img:'custom.jpg'}
+];
+
+const container=document.getElementById("collectionContainer");
+
+collections.forEach(col=>{
+const card=document.createElement("div");
+card.className="card";
+card.innerHTML=`
+<img src="${col.img}">
+<h3>${col.name}</h3>
+<a href="shop.html">Discover</a>
+`;
+container.appendChild(card);
+});
+
 </script>
 
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
