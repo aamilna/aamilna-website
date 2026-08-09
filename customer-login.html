@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login / Sign Up — AaMilNa</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --beige:#F7F2EC;
+  --ivory:#FFFDF8;
+  --blush:#F6D7D7;
+  --blush-deep:#E8B4B4;
+  --sage:#A8B89F;
+  --rose-gold:#B76E79;
+  --muted-gold:#C9A961;
+  --deep-brown:#4A3B47;
+  --shadow-soft:0 18px 45px rgba(74,59,71,0.08);
+  --shadow-medium:0 25px 60px rgba(74,59,71,0.12);
+  --radius:24px;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'Poppins',sans-serif;
+  background:var(--beige);
+  color:var(--deep-brown);
+  overflow-x:hidden;
+  position:relative;
+  line-height:1.65;
+  font-weight:300;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+}
+
+/* ===== FLORAL BACKGROUND ===== */
+.floral-bg{
+  position:fixed;inset:0;z-index:-2;
+  background:
+    radial-gradient(circle at 18% 12%, rgba(246,215,215,0.40), transparent 42%),
+    radial-gradient(circle at 82% 22%, rgba(168,184,159,0.30), transparent 48%),
+    linear-gradient(180deg,#FFFDF8 0%,#F7F2EC 100%);
+  overflow:hidden;
+}
+.glow-orb{position:absolute;border-radius:50%;filter:blur(60px);opacity:0.4;animation:floatOrb 24s ease-in-out infinite;}
+.glow-orb.o1{width:380px;height:380px;background:rgba(246,215,215,0.6);top:5%;left:-5%;}
+.glow-orb.o2{width:320px;height:320px;background:rgba(168,184,159,0.45);bottom:-5%;right:-5%;animation-duration:30s;}
+@keyframes floatOrb{0%,100%{transform:translate(0,0) scale(1);}33%{transform:translate(40px,-30px) scale(1.08);}66%{transform:translate(-30px,40px) scale(0.95);}}
+
+.petal{position:absolute;font-size:26px;opacity:0.45;animation:drift linear infinite;filter:drop-shadow(0 4px 8px rgba(74,59,71,0.06));will-change:transform;}
+@keyframes drift{0%{transform:translateY(-10vh) translateX(0) rotate(0deg);opacity:0;}10%{opacity:0.45;}90%{opacity:0.45;}100%{transform:translateY(110vh) translateX(80px) rotate(360deg);opacity:0;}}
+
+/* ===== HEADER ===== */
+header{
+  position:fixed;top:0;left:0;width:100%;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:12px 50px;z-index:1000;
+  background:rgba(255,253,248,0.55);
+  backdrop-filter:blur(18px) saturate(150%);
+  border-bottom:1px solid rgba(246,215,215,0.3);
+}
+header img.logo{width:100px;height:auto;cursor:pointer;transition:0.4s;}
+.back-btn{
+  text-decoration:none;color:var(--deep-brown);font-weight:500;
+  font-size:13.5px;display:flex;align-items:center;gap:8px;
+  background:rgba(255,253,248,0.8);padding:10px 20px;border-radius:30px;
+  border:1px solid rgba(183,110,121,0.3);transition:0.3s;
+}
+.back-btn:hover{background:var(--blush);transform:translateX(-3px);}
+
+/* ===== AUTH CARD ===== */
+.auth-wrapper{
+  flex:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:140px 20px 80px;
+}
+.auth-card{
+  width:100%;
+  max-width:480px;
+  background:rgba(255,253,248,0.85);
+  backdrop-filter:blur(18px) saturate(150%);
+  border-radius:32px;
+  box-shadow:var(--shadow-medium);
+  border:1px solid rgba(255,255,255,0.6);
+  overflow:hidden;
+  position:relative;
+}
+
+/* Sliding Tab */
+.auth-tabs{
+  display:flex;
+  background:rgba(246,215,215,0.2);
+  position:relative;
+  border-radius:0;
+  padding:8px;
+  margin-bottom:30px;
+}
+.auth-tab{
+  flex:1;
+  text-align:center;
+  padding:12px;
+  font-weight:500;
+  font-size:14px;
+  color:var(--deep-brown);
+  cursor:pointer;
+  z-index:2;
+  transition:color 0.3s;
+}
+.auth-tab.active{color:white;}
+.tab-slider{
+  position:absolute;
+  top:8px;
+  left:8px;
+  width:calc(50% - 8px);
+  height:calc(100% - 16px);
+  background:linear-gradient(135deg,var(--rose-gold),var(--blush-deep));
+  border-radius:24px;
+  transition:transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index:1;
+  box-shadow:0 4px 15px rgba(183,110,121,0.3);
+}
+.auth-card.signup-mode .tab-slider{
+  transform:translateX(100%);
+}
+
+/* Forms */
+.auth-content{padding:0 40px 40px;}
+.auth-form{display:none;animation:fadeIn 0.5s ease;}
+.auth-form.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+.auth-header{text-align:center;margin-bottom:30px;}
+.auth-header h2{font-family:'Playfair Display',serif;font-size:28px;font-weight:600;margin-bottom:8px;color:var(--deep-brown);}
+.auth-header p{font-size:14px;color:#6a5862;}
+
+.input-group{margin-bottom:20px;position:relative;}
+.input-group label{display:block;font-size:12px;font-weight:500;color:var(--sage-deep);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px;}
+.input-group input{width:100%;padding:14px 18px;border-radius:16px;border:1.5px solid rgba(183,110,121,0.2);background:var(--ivory);font-family:'Poppins',sans-serif;font-size:14px;color:var(--deep-brown);outline:none;transition:0.3s;}
+.input-group input:focus{border-color:var(--rose-gold);box-shadow:0 4px 12px rgba(183,110,121,0.1);}
+
+.auth-btn{
+  width:100%;
+  padding:15px;
+  border:none;
+  border-radius:16px;
+  background:linear-gradient(135deg,var(--rose-gold),var(--blush-deep));
+  color:white;
+  font-family:'Poppins',sans-serif;
+  font-size:15px;
+  font-weight:500;
+  cursor:pointer;
+  transition:0.3s;
+  box-shadow:0 8px 20px rgba(183,110,121,0.25);
+  margin-top:10px;
+}
+.auth-btn:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(183,110,121,0.35);}
+.auth-btn:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
+
+.auth-error{background:rgba(255, 107, 107, 0.1);color:#d9534f;border:1px solid rgba(255, 107, 107, 0.3);padding:12px;border-radius:12px;font-size:13px;margin-bottom:20px;display:none;}
+.auth-error.show{display:block;}
+
+.auth-divider{display:flex;align-items:center;margin:25px 0;color:#8a7882;font-size:12px;}
+.auth-divider::before, .auth-divider::after{content:"";flex:1;height:1px;background:rgba(183,110,121,0.2);}
+.auth-divider span{padding:0 15px;}
+
+.google-btn{
+  width:100%;
+  padding:13px;
+  border:1.5px solid rgba(74,59,71,0.1);
+  border-radius:16px;
+  background:white;
+  font-family:'Poppins',sans-serif;
+  font-size:14px;
+  font-weight:500;
+  color:var(--deep-brown);
+  cursor:pointer;
+  transition:0.3s;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+}
+.google-btn:hover{background:#fdfdfd;box-shadow:0 4px 12px rgba(0,0,0,0.05);}
+
+/* ===== FOOTER ===== */
+footer{background:linear-gradient(180deg,#eadfd4,#dccfc1);padding:30px 20px;text-align:center;font-size:13px;color:#6a5862;}
+footer span{color:var(--rose-gold);font-weight:500;}
+
+/* ===== FLOATING & MASCOT ===== */
+#viewportSize{position:fixed;bottom:20px;right:20px;background:rgba(183,110,121,0.88);color:white;padding:9px 16px;border-radius:20px;font-weight:500;font-size:12.5px;z-index:9999;pointer-events:none;}
+#mascotGuide{position:fixed;left:20px;bottom:80px;display:flex;flex-direction:column;align-items:center;z-index:9999;}
+.mascot-box{background:rgba(255,253,248,0.98);padding:12px;border-radius:20px;box-shadow:var(--shadow-medium);display:flex;flex-direction:column;align-items:center;gap:8px;border:2px solid rgba(183,110,121,0.3);max-width:160px;}
+.mascot-box img{width:70px;height:70px;object-fit:contain;}
+.mascot-bubble{background:#fff0f5;border-radius:10px;padding:6px 10px;font-size:11px;color:var(--deep-brown);text-align:center;line-height:1.4;width:100%;border:1px solid #ffd6e0;}
+
+.toast{position:fixed;top:90px;right:20px;background:var(--ivory);padding:14px 22px;border-radius:14px;box-shadow:var(--shadow-medium);border-left:4px solid var(--sage-deep);font-size:13.5px;z-index:10000;transform:translateX(420px);transition:transform 0.4s cubic-bezier(0.175,0.885,0.32,1.275);}
+.toast.show{transform:translateX(0);}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:768px){
+  header{padding:10px 20px;}
+  .auth-wrapper{padding:120px 15px 60px;}
+  .auth-content{padding:0 25px 30px;}
+  .auth-card{max-width:100%;}
+}
+</style>
+</head>
+<body>
+
+<div class="floral-bg">
+  <div class="glow-orb o1"></div>
+  <div class="glow-orb o2"></div>
+  <div id="petalContainer"></div>
+</div>
+
+<header>
+  <!-- FIX: Updated to Home%20Page.html -->
+  <img src="logo.png.jpeg" alt="AaMilNa Logo" class="logo" onclick="location.href='Home%20Page.html'">
+  <a href="Home%20Page.html" class="back-btn">← Back to Home</a>
+</header>
+
+<div class="auth-wrapper">
+  <div class="auth-card" id="authCard">
+    
+    <div class="auth-tabs">
+      <div class="tab-slider"></div>
+      <div class="auth-tab active" id="loginTab" onclick="switchTab('login')">Login</div>
+      <div class="auth-tab" id="signupTab" onclick="switchTab('signup')">Sign Up</div>
+    </div>
+
+    <div class="auth-content">
+      <!-- LOGIN FORM -->
+      <div class="auth-form active" id="loginForm">
+        <div class="auth-header">
+          <h2>Welcome Back</h2>
+          <p>Login to continue your handmade journey</p>
+        </div>
+        
+        <div class="auth-error" id="loginError"></div>
+        
+        <form id="loginFormSubmit">
+          <div class="input-group">
+            <label>Email Address</label>
+            <input type="email" id="loginEmail" placeholder="your@email.com" required>
+          </div>
+          <div class="input-group">
+            <label>Password</label>
+            <input type="password" id="loginPassword" placeholder="••••••••" required>
+          </div>
+          <button type="submit" class="auth-btn" id="loginBtn">Login</button>
+        </form>
+
+        <div class="auth-divider"><span>OR</span></div>
+        
+        <button class="google-btn" onclick="loginWithGoogle()">
+          <img src="https://www.google.com/favicon.ico" width="18" alt="Google"> Continue with Google
+        </button>
+      </div>
+
+      <!-- SIGNUP FORM -->
+      <div class="auth-form" id="signupForm">
+        <div class="auth-header">
+          <h2>Create Account</h2>
+          <p>Join our community of artisan lovers</p>
+        </div>
+        
+        <div class="auth-error" id="signupError"></div>
+        
+        <form id="signupFormSubmit">
+          <div class="input-group">
+            <label>Full Name</label>
+            <input type="text" id="signupName" placeholder="Jane Doe" required>
+          </div>
+          <div class="input-group">
+            <label>Email Address</label>
+            <input type="email" id="signupEmail" placeholder="your@email.com" required>
+          </div>
+          <div class="input-group">
+            <label>Phone Number</label>
+            <input type="tel" id="signupPhone" placeholder="+1 234 567 890" required>
+          </div>
+          <div class="input-group">
+            <label>Password</label>
+            <input type="password" id="signupPassword" placeholder="Min 6 characters" required>
+          </div>
+          <button type="submit" class="auth-btn" id="signupBtn">Create Account</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  © 2026 <span>AaMilNa</span> • Softly handmade 🤍
+</footer>
+
+<div id="viewportSize"></div>
+<div class="toast" id="toast"></div>
+
+<div id="mascotGuide">
+  <div class="mascot-box">
+    <img src="mascot.png.jpeg" alt="Mascot">
+    <div class="mascot-bubble">Welcome! Need help logging in? 🐾</div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+// ===== FIREBASE CONFIG =====
+const firebaseConfig = {
+  apiKey: "AIzaSyCHMIBHlYGqyw4U7ZZplwi4LgQxga99nLM",
+  authDomain: "aamilna.firebaseapp.com",
+  projectId: "aamilna",
+  storageBucket: "aamilna.firebasestorage.app",
+  messagingSenderId: "127180284017",
+  appId: "1:127180284017:web:b024e50670228b085f7bd0"
+};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// ===== REDIRECT LOCK =====
+let isRedirecting = false;
+function goToDashboard() {
+  if (!isRedirecting) {
+    isRedirecting = true;
+    window.location.href = 'customer-dashboard.html';
+  }
+}
+
+// ===== UI TOGGLE =====
+window.switchTab = function(tab) {
+  const card = document.getElementById('authCard');
+  const loginTab = document.getElementById('loginTab');
+  const signupTab = document.getElementById('signupTab');
+  const loginForm = document.getElementById('loginForm');
+  const signupForm = document.getElementById('signupForm');
+
+  if(tab === 'signup') {
+    card.classList.add('signup-mode');
+    loginTab.classList.remove('active');
+    signupTab.classList.add('active');
+    loginForm.classList.remove('active');
+    signupForm.classList.add('active');
+  } else {
+    card.classList.remove('signup-mode');
+    signupTab.classList.remove('active');
+    loginTab.classList.add('active');
+    signupForm.classList.remove('active');
+    loginForm.classList.add('active');
+  }
+}
+
+// ===== TOAST =====
+const toast = document.getElementById('toast');
+function showToast(msg){
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(()=>toast.classList.remove('show'), 2800);
+}
+
+// ===== SIGN UP LOGIC =====
+document.getElementById('signupFormSubmit').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('signupBtn');
+  const name = document.getElementById('signupName').value;
+  const email = document.getElementById('signupEmail').value;
+  const phone = document.getElementById('signupPhone').value;
+  const password = document.getElementById('signupPassword').value;
+  const errorDiv = document.getElementById('signupError');
+
+  errorDiv.classList.remove('show');
+  btn.disabled = true;
+  btn.textContent = 'Creating Account...';
+
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+
+    await setDoc(doc(db, "users", user.uid), {
+      name: name,
+      email: email,
+      phone: phone,
+      role: 'customer',
+      createdAt: new Date()
+    });
+
+    const customerData = { id: user.uid, name, email, phone, role: 'customer' };
+    localStorage.setItem('customer', JSON.stringify(customerData));
+
+    showToast('🌸 Account created successfully!');
+    setTimeout(goToDashboard, 1000);
+
+  } catch (error) {
+    let msg = error.message;
+    if(error.code === 'auth/email-already-in-use') msg = 'This email is already registered. Please login.';
+    if(error.code === 'auth/weak-password') msg = 'Password should be at least 6 characters.';
+    errorDiv.textContent = msg;
+    errorDiv.classList.add('show');
+    btn.disabled = false;
+    btn.textContent = 'Create Account';
+  }
+});
+
+// ===== LOGIN LOGIC =====
+document.getElementById('loginFormSubmit').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('loginBtn');
+  const email = document.getElementById('loginEmail').value;
+  const password = document.getElementById('loginPassword').value;
+  const errorDiv = document.getElementById('loginError');
+
+  errorDiv.classList.remove('show');
+  btn.disabled = true;
+  btn.textContent = 'Logging in...';
+
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+
+    const docSnap = await getDoc(doc(db, "users", user.uid));
+    if(docSnap.exists()) {
+      const data = docSnap.data();
+      if(data.role === 'artisan') {
+        await signOut(auth);
+        throw { code: 'auth/unauthorized', message: 'Please use the Artisan Login page.' };
+      }
+      const customerData = { id: user.uid, ...data };
+      localStorage.setItem('customer', JSON.stringify(customerData));
+    }
+
+    showToast('✨ Welcome back!');
+    setTimeout(goToDashboard, 1000);
+
+  } catch (error) {
+    let msg = error.message;
+    if(error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') {
+      msg = 'Invalid email or password.';
+    }
+    errorDiv.textContent = msg;
+    errorDiv.classList.add('show');
+    btn.disabled = false;
+    btn.textContent = 'Login';
+  }
+});
+
+// ===== GOOGLE LOGIN =====
+window.loginWithGoogle = function() {
+  showToast('Google Login will be configured soon!');
+}
+
+// ===== AUTH STATE LISTENER (Flicker-Free & Error Proof) =====
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    let customer = JSON.parse(localStorage.getItem("customer"));
+    
+    if(!customer || customer.id !== user.uid) {
+      try {
+        const docSnap = await getDoc(doc(db, "users", user.uid));
+        if(docSnap.exists()) {
+          const data = docSnap.data();
+          if(data.role === 'artisan') {
+            window.location.href = 'artisan-dashboard.html';
+            return;
+          }
+          customer = { id: user.uid, ...data };
+          localStorage.setItem('customer', JSON.stringify(customer));
+        }
+      } catch (error) {
+        console.error("Error fetching profile, proceeding with basic login:", error);
+      }
+    }
+    
+    if(customer && customer.id === user.uid) {
+      goToDashboard();
+    } else if (user) {
+      // If Firestore failed but Firebase Auth succeeded, redirect anyway using basic data
+      localStorage.setItem('customer', JSON.stringify({ id: user.uid, email: user.email, role: 'customer' }));
+      goToDashboard();
+    }
+  }
+});
+
+// ===== PETALS & VIEWPORT =====
+const petalContainer = document.getElementById('petalContainer');
+const petalEmojis = ['🌸','🌺','💮','🍃'];
+function createPetal(){
+  const petal = document.createElement('div');
+  petal.className = 'petal';
+  petal.textContent = petalEmojis[Math.floor(Math.random()*petalEmojis.length)];
+  petal.style.left = Math.random()*100 + '%';
+  petal.style.fontSize = (16 + Math.random()*22) + 'px';
+  petal.style.animationDuration = (15 + Math.random()*15) + 's';
+  petal.style.animationDelay = -Math.random()*15 + 's';
+  petalContainer.appendChild(petal);
+  setTimeout(()=>petal.remove(), 30000);
+}
+for(let i=0;i<8;i++) createPetal();
+setInterval(createPetal, 2500);
+
+const viewportIndicator = document.getElementById('viewportSize');
+function updateViewportSize(){ viewportIndicator.textContent = `${window.innerWidth}px × ${window.innerHeight}px`; }
+window.addEventListener('resize', updateViewportSize);
+updateViewportSize();
+</script>
+</body>
+</html>
