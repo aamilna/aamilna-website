@@ -227,10 +227,10 @@ header img.logo{height:50px;width:auto;cursor:pointer;transition:0.3s;}
 </div>
 
 <header>
-  <!-- FIX: Updated to Home.html -->
-  <img src="logo.png.jpeg" alt="AaMilNa Logo" class="logo" onclick="window.location.href='Home.html'">
+  <!-- FIX: Updated to index.html -->
+  <img src="logo.png.jpeg" alt="AaMilNa Logo" class="logo" onclick="window.location.href='index.html'">
   <div class="header-nav">
-    <a href="Home.html" class="header-btn">🏠 <span>Home</span></a>
+    <a href="index.html" class="header-btn">🏠 <span>Home</span></a>
     <a href="shop.html" class="header-btn primary">🛍️ <span>View Shop</span></a>
     <div class="profile-container">
       <div class="profile-avatar" id="avatar">U</div>
@@ -254,7 +254,7 @@ header img.logo{height:50px;width:auto;cursor:pointer;transition:0.3s;}
       <button class="nav-item active" onclick="switchView('orders', event)"><span class="icon">📦</span> Orders</button>
       <button class="nav-item" onclick="switchView('products', event)"><span class="icon">🛍️</span> My Products</button>
       <button class="nav-item" onclick="switchView('profile', event)"><span class="icon">⚙️</span> Profile</button>
-      <a href="Home.html" class="nav-item"><span class="icon">🏠</span> Back to Home</a>
+      <a href="index.html" class="nav-item"><span class="icon">🏠</span> Back to Home</a>
       <button class="nav-item logout" onclick="logout()"><span class="icon">🚪</span> Logout</button>
     </nav>
   </aside>
@@ -465,7 +465,7 @@ window.logout = async function() {
   await signOut(auth);
   localStorage.removeItem('artisanProfile');
   // Send them back to the home page after logout
-  window.location.href = 'Home.html';
+  window.location.href = 'index.html';
 }
 
 // --- UI VIEW SWITCHING ---

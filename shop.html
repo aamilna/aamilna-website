@@ -199,7 +199,7 @@ footer{background:linear-gradient(180deg,#eadfd4,#dccfc1);padding:70px 50px 28px
 </div>
 
 <header id="siteHeader">
-  <img src="logo.png.jpeg" alt="AaMilNa Logo" class="logo" onclick="location.href='home.html'">
+  <img src="logo.png.jpeg" alt="AaMilNa Logo" class="logo" onclick="location.href='index.html'">
   <nav class="nav-links" id="navLinks"></nav>
   <div style="display:flex;align-items:center;gap:18px;">
     <div class="profile-container" id="profileContainer"></div>
@@ -257,7 +257,7 @@ footer{background:linear-gradient(180deg,#eadfd4,#dccfc1);padding:70px 50px 28px
     </div>
     <div class="footer-col"><h4>Shop</h4><ul><li><a href="shop.html">All Products</a></li><li><a href="#">New Arrivals</a></li><li><a href="#">Bestsellers</a></li></ul></div>
     <div class="footer-col"><h4>Support</h4><ul><li><a href="#">Help Center</a></li><li><a href="#">Shipping Info</a></li><li><a href="#">Returns</a></li></ul></div>
-    <div class="footer-col"><h4>Company</h4><ul><li><a href="home.html">About Us</a></li><li><a href="#">Our Artisans</a></li><li><a href="#">Careers</a></li></ul></div>
+    <div class="footer-col"><h4>Company</h4><ul><li><a href="index.html">About Us</a></li><li><a href="#">Our Artisans</a></li><li><a href="#">Careers</a></li></ul></div>
     <div class="footer-col"><h4>Contact</h4><div style="font-size:13px;color:#6a5862;font-weight:300;line-height:1.8;">✉ aamila.com@gmail.com<br>📱 @aamilna_offical<br>📍 Made with love, worldwide</div></div>
   </div>
   <div class="footer-bottom">© 2026 <span>AaMilNa</span> • Softly handmade 🤍</div>
@@ -507,11 +507,11 @@ function updateBadges() {
 // --- NAV & PROFILE ---
 function setNavLinks() {
   let links = `
-    <a href="home.html">Home</a>
+    <a href="index.html">Home</a>
     <a href="shop.html">Shop</a>
-    <a href="home.html#categories">Categories</a>
-    <a href="home.html#artisans">Artisans</a>
-    <a href="home.html#about">About</a>
+    <a href="index.html#categories">Categories</a>
+    <a href="index.html#artisans">Artisans</a>
+    <a href="index.html#about">About</a>
     <a href="#" class="icon-link" onclick="showToast('Wishlist: ${wishlistCount} items');return false;" title="Wishlist">🤍<span class="nav-link-badge" id="wishlistBadge">${wishlistCount}</span></a>
     <a href="cart.html" class="icon-link" title="Cart">🛒<span class="nav-link-badge" id="cartBadge">${cartCount}</span></a>
   `;
