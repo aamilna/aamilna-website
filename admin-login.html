@@ -50,12 +50,13 @@ body{font-family:'Poppins',sans-serif;background:var(--beige);color:var(--deep-b
     </div>
     <button type="submit" class="auth-btn" id="loginBtn">Secure Login</button>
   </form>
-  <a href="Home%20Page.html" class="back-btn">← Back to Website</a>
+  <!-- FIX: Updated to Home.html -->
+  <a href="Home.html" class="back-btn">← Back to Website</a>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -105,9 +106,6 @@ document.getElementById('adminLoginForm').addEventListener('submit', async (e) =
     btn.textContent = 'Secure Login';
   }
 });
-
-// Import signOut just in case it's needed for the unauthorized rejection
-import { signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 </script>
 </body>
 </html>

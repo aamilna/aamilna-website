@@ -199,7 +199,7 @@ footer{background:linear-gradient(180deg,#eadfd4,#dccfc1);padding:70px 50px 28px
 </div>
 
 <header id="siteHeader">
-  <img src="logo.png.jpeg" alt="AaMilNa Logo" class="logo" onclick="location.href='Home.html'">
+  <img src="logo.png.jpeg" alt="AaMilNa Logo" class="logo" onclick="location.href='home.html'">
   <nav class="nav-links" id="navLinks"></nav>
   <div style="display:flex;align-items:center;gap:18px;">
     <div class="profile-container" id="profileContainer"></div>
@@ -257,7 +257,7 @@ footer{background:linear-gradient(180deg,#eadfd4,#dccfc1);padding:70px 50px 28px
     </div>
     <div class="footer-col"><h4>Shop</h4><ul><li><a href="shop.html">All Products</a></li><li><a href="#">New Arrivals</a></li><li><a href="#">Bestsellers</a></li></ul></div>
     <div class="footer-col"><h4>Support</h4><ul><li><a href="#">Help Center</a></li><li><a href="#">Shipping Info</a></li><li><a href="#">Returns</a></li></ul></div>
-    <div class="footer-col"><h4>Company</h4><ul><li><a href="Home.html">About Us</a></li><li><a href="#">Our Artisans</a></li><li><a href="#">Careers</a></li></ul></div>
+    <div class="footer-col"><h4>Company</h4><ul><li><a href="home.html">About Us</a></li><li><a href="#">Our Artisans</a></li><li><a href="#">Careers</a></li></ul></div>
     <div class="footer-col"><h4>Contact</h4><div style="font-size:13px;color:#6a5862;font-weight:300;line-height:1.8;">✉ aamila.com@gmail.com<br>📱 @aamilna_offical<br>📍 Made with love, worldwide</div></div>
   </div>
   <div class="footer-bottom">© 2026 <span>AaMilNa</span> • Softly handmade 🤍</div>
@@ -277,7 +277,8 @@ footer{background:linear-gradient(180deg,#eadfd4,#dccfc1);padding:70px 50px 28px
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+// FIX: Added doc and getDoc to the imports below
+import { getFirestore, collection, query, where, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCHMIBHlYGqyw4U7ZZplwi4LgQxga99nLM",
@@ -464,12 +465,38 @@ window.toggleWishlist = function(id) {
     updateBadges();
   }
 };
+
+// --- UPGRADED ADD TO CART LOGIC (Saves actual product to cart.html) ---
 window.addToCart = function(id) {
-  cartCount++;
+  const product = currentProducts.find(p => p.id === id);
+  if (!product) return;
+
+  let cartItems = [];
+  try { cartItems = JSON.parse(localStorage.getItem('cartItems')) || []; } catch(e) {}
+
+  const existingItem = cartItems.find(item => item.id === id);
+  if (existingItem) {
+    existingItem.qty += 1;
+  } else {
+    cartItems.push({
+      id: id,
+      name: product.name,
+      price: product.price,
+      image: product.image, // Base64 string from Firestore
+      seller: product.seller,
+      qty: 1
+    });
+  }
+
+  localStorage.setItem('cartItems', JSON.stringify(cartItems));
+  
+  cartCount = cartItems.reduce((sum, item) => sum + item.qty, 0);
   localStorage.setItem('cartCount', cartCount);
-  showToast(`🛒 Added to cart`);
+  
+  showToast(`🛒 Added "${product.name}" to cart`);
   updateBadges();
 };
+
 function updateBadges() {
   const wBadge = document.getElementById('wishlistBadge');
   const cBadge = document.getElementById('cartBadge');
@@ -480,13 +507,13 @@ function updateBadges() {
 // --- NAV & PROFILE ---
 function setNavLinks() {
   let links = `
-    <a href="Home.html">Home</a>
+    <a href="home.html">Home</a>
     <a href="shop.html">Shop</a>
-    <a href="Home.html#categories">Categories</a>
-    <a href="Home.html#artisans">Artisans</a>
-    <a href="Home.html#about">About</a>
+    <a href="home.html#categories">Categories</a>
+    <a href="home.html#artisans">Artisans</a>
+    <a href="home.html#about">About</a>
     <a href="#" class="icon-link" onclick="showToast('Wishlist: ${wishlistCount} items');return false;" title="Wishlist">🤍<span class="nav-link-badge" id="wishlistBadge">${wishlistCount}</span></a>
-    <a href="#" class="icon-link" onclick="showToast('Cart: ${cartCount} items');return false;" title="Cart">🛒<span class="nav-link-badge" id="cartBadge">${cartCount}</span></a>
+    <a href="cart.html" class="icon-link" title="Cart">🛒<span class="nav-link-badge" id="cartBadge">${cartCount}</span></a>
   `;
   if(artisan && artisan.id) links += `<a href="artisan-dashboard.html" class="nav-cta">Dashboard</a>`;
   else if(customer && customer.id) links += `<a href="customer-dashboard.html" class="nav-cta">Dashboard</a>`;
